@@ -1,22 +1,26 @@
-import React, { useState } from "react";
-import * as firebase from "firebase/app";
-import "firebase/firestore";
+import React, { useState, useEffect } from "react";
 
-firebase.initializeApp({
-  apiKey: "AIzaSyCYwZHf6_JKzQxw2RJmLUg48rAiCclaBgI",
-  authDomain: "ryan-florence-planner-clone.firebaseapp.com",
-  projectId: "ryan-florence-planner-clone",
-});
-
-const db = firebase.firestore();
-const todosRef = db.collection('todos')
-
-function App() {
+function App({ todosRef }) {
   const [isEditing, setIsEditing] = useState(false);
   const [todo, setTodo] = useState("");
+  const [todos, setTodos] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = todosRef.onSnapshot(snapshot => {
+      const fetchedTodos = [];
+      snapshot.forEach(t => fetchedTodos.push(t.data()));
+      setTodos(fetchedTodos);
+    })
+
+    return unsubscribe;
+  }, [todosRef]);
 
   return (
     <div>
+      <ul>
+        {todos.map(t => <li key={t.title}>{t.title}</li>)}
+      </ul>
+
       {isEditing && (
         <textarea
           value={todo}
