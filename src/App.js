@@ -8,7 +8,9 @@ function App({ todosRef }) {
   useEffect(() => {
     const unsubscribe = todosRef.onSnapshot(snapshot => {
       const fetchedTodos = [];
-      snapshot.forEach(t => fetchedTodos.push(t.data()));
+      snapshot.forEach(t => {
+        fetchedTodos.push({ id: t.id, ...t.data() })
+      });
       setTodos(fetchedTodos);
     })
 
@@ -18,7 +20,7 @@ function App({ todosRef }) {
   return (
     <div>
       <ul>
-        {todos.map(t => <li key={t.title}>{t.title}</li>)}
+        {todos.map(t => <li key={t.id}>{t.title}</li>)}
       </ul>
 
       {isEditing && (
