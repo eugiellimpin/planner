@@ -1,9 +1,6 @@
-import React from 'react';
-import * as firebase from 'firebase/app';
-import 'firebase/firestore';
-
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import * as firebase from "firebase/app";
+import "firebase/firestore";
 
 firebase.initializeApp({
   apiKey: process.env.FIREBASE_API_KEY,
@@ -12,27 +9,38 @@ firebase.initializeApp({
 });
 
 const db = firebase.firestore();
+const todosRef = db.collection('todos')
 
 function App() {
-  console.log(firebase);
-  console.log(db);
+  const [isEditing, setIsEditing] = useState(false);
+  const [todo, setTodo] = useState("");
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {isEditing && (
+        <textarea
+          value={todo}
+          onChange={(e) => setTodo(e.currentTarget.value)}
+        />
+      )}
+
+      <button
+        disabled={isEditing && todo.length < 1}
+        onClick={() => {
+          if (!isEditing) setIsEditing(true);
+
+          if (todo.trim().length > 0) {
+            todosRef.add({
+              title: todo,
+              done: false
+            })
+            setTodo('')
+          }
+        }}
+      >
+        Add task
+      </button>
+      {isEditing && <button onClick={() => setIsEditing(false)}>Cancel</button>}
     </div>
   );
 }
