@@ -6,13 +6,13 @@ function App({ todosRef }) {
   const [todos, setTodos] = useState([]);
 
   useEffect(() => {
-    const unsubscribe = todosRef.onSnapshot(snapshot => {
+    const unsubscribe = todosRef.onSnapshot((snapshot) => {
       const fetchedTodos = [];
-      snapshot.forEach(t => {
-        fetchedTodos.push({ id: t.id, ...t.data() })
+      snapshot.forEach((t) => {
+        fetchedTodos.push({ id: t.id, ...t.data() });
       });
       setTodos(fetchedTodos);
-    })
+    });
 
     return unsubscribe;
   }, [todosRef]);
@@ -25,7 +25,7 @@ function App({ todosRef }) {
             <input
               type="checkbox"
               checked={t.done}
-              onChange={e => {
+              onChange={(e) => {
                 todosRef.doc(t.id).update({ done: e.currentTarget.checked });
               }}
             />
@@ -49,9 +49,9 @@ function App({ todosRef }) {
           if (todo.trim().length > 0) {
             todosRef.add({
               title: todo,
-              done: false
-            })
-            setTodo('')
+              done: false,
+            });
+            setTodo("");
           }
         }}
       >
