@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 
-function App({ todosRef }) {
+import "./index.css";
+
+function Day(props) {
+  return <div {...props}>Current day</div>;
+}
+
+function Backlog({ todosRef, ...props }) {
   const [isEditing, setIsEditing] = useState(false);
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState([]);
@@ -18,7 +24,7 @@ function App({ todosRef }) {
   }, [todosRef]);
 
   return (
-    <div>
+    <div {...props}>
       <ul>
         {todos.map((t) => (
           <li key={t.id}>
@@ -58,6 +64,15 @@ function App({ todosRef }) {
         Add task
       </button>
       {isEditing && <button onClick={() => setIsEditing(false)}>Cancel</button>}
+    </div>
+  );
+}
+
+function App({ todosRef }) {
+  return (
+    <div className="flex">
+      <Day className="w-50p" />
+      <Backlog todosRef={todosRef} className="w-50p" />
     </div>
   );
 }
