@@ -20,7 +20,18 @@ function App({ todosRef }) {
   return (
     <div>
       <ul>
-        {todos.map(t => <li key={t.id}>{t.title}</li>)}
+        {todos.map((t) => (
+          <li key={t.id}>
+            <input
+              type="checkbox"
+              checked={t.done}
+              onChange={e => {
+                todosRef.doc(t.id).update({ done: e.currentTarget.checked });
+              }}
+            />
+            {t.title}
+          </li>
+        ))}
       </ul>
 
       {isEditing && (
