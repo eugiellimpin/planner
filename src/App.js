@@ -28,9 +28,17 @@ function Backlog({ todosRef, ...props }) {
 
   return (
     <div {...props}>
-      <ul>
+      <ul style={{ listStyleType: "none" }}>
         {todos.map((t) => (
           <li key={t.id}>
+            <button onClick={() => console.log("move me")}>
+              <span
+                role="img"
+                aria-label="Set due date of todo to current selected day"
+              >
+                👈
+              </span>
+            </button>
             <input
               type="checkbox"
               checked={t.done}
