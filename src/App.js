@@ -13,7 +13,7 @@ function Backlog({ todos, todosRef, ...props }) {
 
   return (
     <div {...props}>
-      <ul style={{ listStyleType: "none" }}>
+      <ul>
         {todos.map((t) => (
           <li key={t.id}>
             <button onClick={() => console.log("move me")}>
