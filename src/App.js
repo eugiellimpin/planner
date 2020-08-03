@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import * as firebase from "firebase/app";
 
 import "./index.css";
 
@@ -12,13 +13,15 @@ function Backlog({ todosRef, ...props }) {
   const [todos, setTodos] = useState([]);
 
   useEffect(() => {
-    const unsubscribe = todosRef.onSnapshot((snapshot) => {
-      const fetchedTodos = [];
-      snapshot.forEach((t) => {
-        fetchedTodos.push({ id: t.id, ...t.data() });
+    const unsubscribe = todosRef
+      .where("dueDate", "==", null)
+      .onSnapshot((snapshot) => {
+        const fetchedTodos = [];
+        snapshot.forEach((t) => {
+          fetchedTodos.push({ id: t.id, ...t.data() });
+        });
+        setTodos(fetchedTodos);
       });
-      setTodos(fetchedTodos);
-    });
 
     return unsubscribe;
   }, [todosRef]);
@@ -56,6 +59,8 @@ function Backlog({ todosRef, ...props }) {
             todosRef.add({
               title: todo,
               done: false,
+              // firebase.firestore.Timestamp.now();
+              dueDate: null,
             });
             setTodo("");
           }
