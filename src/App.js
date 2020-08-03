@@ -7,24 +7,9 @@ function Day(props) {
   return <div {...props}>Current day</div>;
 }
 
-function Backlog({ todosRef, ...props }) {
+function Backlog({ todos, todosRef, ...props }) {
   const [isEditing, setIsEditing] = useState(false);
   const [todo, setTodo] = useState("");
-  const [todos, setTodos] = useState([]);
-
-  useEffect(() => {
-    const unsubscribe = todosRef
-      .where("dueDate", "==", null)
-      .onSnapshot((snapshot) => {
-        const fetchedTodos = [];
-        snapshot.forEach((t) => {
-          fetchedTodos.push({ id: t.id, ...t.data() });
-        });
-        setTodos(fetchedTodos);
-      });
-
-    return unsubscribe;
-  }, [todosRef]);
 
   return (
     <div {...props}>
@@ -82,10 +67,26 @@ function Backlog({ todosRef, ...props }) {
 }
 
 function App({ todosRef }) {
+  const [todos, setTodos] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = todosRef
+      .where("dueDate", "==", null)
+      .onSnapshot((snapshot) => {
+        const fetchedTodos = [];
+        snapshot.forEach((t) => {
+          fetchedTodos.push({ id: t.id, ...t.data() });
+        });
+        setTodos(fetchedTodos);
+      });
+
+    return unsubscribe;
+  }, [todosRef]);
+
   return (
     <div className="flex">
       <Day className="w-50p" />
-      <Backlog todosRef={todosRef} className="w-50p" />
+      <Backlog todos={todos} todosRef={todosRef} className="w-50p" />
     </div>
   );
 }
