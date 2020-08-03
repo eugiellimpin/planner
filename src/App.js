@@ -52,6 +52,7 @@ function Backlog({ todos, todosRef, ...props }) {
             todosRef.add({
               title: todo,
               done: false,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp(),
               // firebase.firestore.Timestamp.now();
               dueDate: null,
             });
