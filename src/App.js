@@ -73,6 +73,7 @@ function App({ todosRef }) {
   useEffect(() => {
     const unsubscribe = todosRef
       .where("dueDate", "==", null)
+      .orderBy("createdAt")
       .onSnapshot((snapshot) => {
         const fetchedTodos = [];
         snapshot.forEach((t) => {
