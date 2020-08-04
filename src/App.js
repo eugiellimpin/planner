@@ -126,13 +126,10 @@ function App({ todosRef }) {
   }, [todosRef]);
 
   const today = new Date().toDateString();
-  console.log("today is", today);
   const todosToday = todos.filter(
     (t) => t.dueDate && t.dueDate.toDate().toDateString() === today
   );
   const backlogTodos = todos.filter((t) => !t.dueDate);
-
-  console.log(`there are ${todosToday.length} todos for today`);
 
   return (
     <div className="flex">
