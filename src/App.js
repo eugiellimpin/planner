@@ -3,8 +3,27 @@ import * as firebase from "firebase/app";
 
 import "./index.css";
 
-function Day(props) {
-  return <div {...props}>Current day</div>;
+function Day({ todos, todosRef, ...props }) {
+  return (
+    <div {...props}>
+      <h2>Current day</h2>
+
+      <ul>
+        {todos.map((t) => (
+          <li key={t.id}>
+            <input
+              type="checkbox"
+              checked={t.done}
+              onChange={(e) => {
+                todosRef.doc(t.id).update({ done: e.currentTarget.checked });
+              }}
+            />
+            {t.title}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
 function Backlog({ todos, todosRef, ...props }) {
@@ -13,10 +32,18 @@ function Backlog({ todos, todosRef, ...props }) {
 
   return (
     <div {...props}>
+      <h2>Backlog</h2>
+
       <ul>
         {todos.map((t) => (
           <li key={t.id}>
-            <button onClick={() => console.log("move me")}>
+            <button
+              onClick={() =>
+                todosRef
+                  .doc(t.id)
+                  .update({ dueDate: firebase.firestore.Timestamp.now() })
+              }
+            >
               <span
                 role="img"
                 aria-label="Set due date of todo to current selected day"
@@ -71,24 +98,31 @@ function App({ todosRef }) {
   const [todos, setTodos] = useState([]);
 
   useEffect(() => {
-    const unsubscribe = todosRef
-      .where("dueDate", "==", null)
-      .orderBy("createdAt")
-      .onSnapshot((snapshot) => {
-        const fetchedTodos = [];
-        snapshot.forEach((t) => {
-          fetchedTodos.push({ id: t.id, ...t.data() });
-        });
-        setTodos(fetchedTodos);
+    const unsubscribe = todosRef.orderBy("createdAt").onSnapshot((snapshot) => {
+      const fetchedTodos = [];
+      snapshot.forEach((t) => {
+        fetchedTodos.push({ id: t.id, ...t.data() });
       });
+
+      setTodos(fetchedTodos);
+    });
 
     return unsubscribe;
   }, [todosRef]);
 
+  const today = new Date().toDateString();
+  console.log("today is", today);
+  const todosToday = todos.filter(
+    (t) => t.dueDate && t.dueDate.toDate().toDateString() === today
+  );
+  const backlogTodos = todos.filter((t) => !t.dueDate);
+
+  console.log(`there are ${todosToday.length} todos for today`);
+
   return (
     <div className="flex">
-      <Day className="w-50p" />
-      <Backlog todos={todos} todosRef={todosRef} className="w-50p" />
+      <Day todos={todosToday} todosRef={todosRef} className="w-50p" />
+      <Backlog todos={backlogTodos} todosRef={todosRef} className="w-50p" />
     </div>
   );
 }
