@@ -3,6 +3,29 @@ import * as firebase from "firebase/app";
 
 import "./index.css";
 
+function Todo({ todo, onMove, onChangeIsDone, moveButtonPosition }) {
+  return (
+    <li>
+      {moveButtonPosition === 'left' && (
+      <button onClick={onMove}>
+        {"<"}
+      </button>)}
+
+      <input
+        type="checkbox"
+        checked={todo.done}
+        onChange={(e) => onChangeIsDone(e.currentTarget.checked)}
+      />
+      {todo.title}
+
+      {moveButtonPosition === 'right' && (
+      <button onClick={onMove}>
+        {">"}
+      </button>)}
+    </li>
+  );
+}
+
 function Day({ todos, todosRef, ...props }) {
   return (
     <div {...props}>
@@ -10,16 +33,19 @@ function Day({ todos, todosRef, ...props }) {
 
       <ul>
         {todos.map((t) => (
-          <li key={t.id}>
-            <input
-              type="checkbox"
-              checked={t.done}
-              onChange={(e) => {
-                todosRef.doc(t.id).update({ done: e.currentTarget.checked });
-              }}
-            />
-            {t.title}
-          </li>
+          <Todo
+            todo={t}
+            onChangeIsDone={(isDone) =>
+              todosRef.doc(t.id).update({ done: isDone })
+            }
+            onMove={() =>
+              todosRef
+                .doc(t.id)
+                .update({ dueDate: null })
+            }
+            moveButtonPosition="right"
+            key={t.id}
+          />
         ))}
       </ul>
     </div>
@@ -36,30 +62,19 @@ function Backlog({ todos, todosRef, ...props }) {
 
       <ul>
         {todos.map((t) => (
-          <li key={t.id}>
-            <button
-              onClick={() =>
-                todosRef
-                  .doc(t.id)
-                  .update({ dueDate: firebase.firestore.Timestamp.now() })
-              }
-            >
-              <span
-                role="img"
-                aria-label="Set due date of todo to current selected day"
-              >
-                👈
-              </span>
-            </button>
-            <input
-              type="checkbox"
-              checked={t.done}
-              onChange={(e) => {
-                todosRef.doc(t.id).update({ done: e.currentTarget.checked });
-              }}
-            />
-            {t.title}
-          </li>
+          <Todo
+            todo={t}
+            onChangeIsDone={(isDone) =>
+              todosRef.doc(t.id).update({ done: isDone })
+            }
+            onMove={() =>
+              todosRef
+                .doc(t.id)
+                .update({ dueDate: firebase.firestore.Timestamp.now() })
+            }
+            moveButtonPosition="left"
+            key={t.id}
+          />
         ))}
       </ul>
 
