@@ -23,8 +23,8 @@ function Todo({ todo, onMove, onChangeIsDone, moveButtonPosition }) {
   );
 }
 
-function CalendarDay({ children }) {
-  return <div>{children}</div>;
+function CalendarDay({ isCurrent, children }) {
+  return <div className={isCurrent ? "bg-lightRed" : ""}>{children}</div>;
 }
 
 function Calendar(props) {
@@ -35,9 +35,13 @@ function Calendar(props) {
     <div {...props}>
       <h2>Calendar</h2>
       <div className="grid-container">
-        {[...new Array(dayCount).keys()].map((dayIndex) => (
-          <CalendarDay>{dayIndex + 1}</CalendarDay>
-        ))}
+        {[...new Array(dayCount).keys()].map((dayIndex) => {
+          return (
+            <CalendarDay isCurrent={currentDate.getDate() === dayIndex + 1}>
+              {dayIndex + 1}
+            </CalendarDay>
+          );
+        })}
       </div>
     </div>
   );
