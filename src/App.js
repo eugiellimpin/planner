@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
 import * as firebase from "firebase/app";
+import getDaysInMonth from "date-fns/getDaysInMonth";
 
 import "./index.css";
 
 function Todo({ todo, onMove, onChangeIsDone, moveButtonPosition }) {
   return (
     <li>
-      {moveButtonPosition === 'left' && (
-      <button onClick={onMove}>
-        {"<"}
-      </button>)}
+      {moveButtonPosition === "left" && <button onClick={onMove}>{"<"}</button>}
 
       <input
         type="checkbox"
@@ -18,11 +16,30 @@ function Todo({ todo, onMove, onChangeIsDone, moveButtonPosition }) {
       />
       {todo.title}
 
-      {moveButtonPosition === 'right' && (
-      <button onClick={onMove}>
-        {">"}
-      </button>)}
+      {moveButtonPosition === "right" && (
+        <button onClick={onMove}>{">"}</button>
+      )}
     </li>
+  );
+}
+
+function CalendarDay({ children }) {
+  return <div>{children}</div>;
+}
+
+function Calendar(props) {
+  const currentDate = new Date();
+  const dayCount = getDaysInMonth(currentDate);
+
+  return (
+    <div {...props}>
+      <h2>Calendar</h2>
+      <div className="grid-container">
+        {[...new Array(dayCount).keys()].map((dayIndex) => (
+          <CalendarDay>{dayIndex + 1}</CalendarDay>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -38,11 +55,7 @@ function Day({ todos, todosRef, ...props }) {
             onChangeIsDone={(isDone) =>
               todosRef.doc(t.id).update({ done: isDone })
             }
-            onMove={() =>
-              todosRef
-                .doc(t.id)
-                .update({ dueDate: null })
-            }
+            onMove={() => todosRef.doc(t.id).update({ dueDate: null })}
             moveButtonPosition="right"
             key={t.id}
           />
@@ -133,8 +146,13 @@ function App({ todosRef }) {
 
   return (
     <div className="flex">
-      <Day todos={todosToday} todosRef={todosRef} className="w-50p" />
-      <Backlog todos={backlogTodos} todosRef={todosRef} className="w-50p" />
+      <Calendar className="flex-grow-1" />
+      <Day todos={todosToday} todosRef={todosRef} className="flex-grow-1" />
+      <Backlog
+        todos={backlogTodos}
+        todosRef={todosRef}
+        className="flex-grow-1"
+      />
     </div>
   );
 }

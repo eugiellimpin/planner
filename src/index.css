@@ -16,10 +16,16 @@ code {
   display: flex;
 }
 
-.w-50p {
-  width: 50%;
+.flex-grow-1 {
+  flex-grow: 1;
 }
 
 ul {
   list-style-type: none;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(7, 1fr);
 }
