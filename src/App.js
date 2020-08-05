@@ -23,11 +23,15 @@ function Todo({ todo, onMove, onChangeIsDone, moveButtonPosition }) {
   );
 }
 
-function CalendarDay({ isCurrent, children }) {
-  return <div className={isCurrent ? "bg-lightRed" : ""}>{children}</div>;
+function CalendarDay({ onClick, isCurrent, children }) {
+  return (
+    <div onClick={onClick} className={isCurrent ? "bg-lightRed" : ""}>
+      {children}
+    </div>
+  );
 }
 
-function Calendar(props) {
+function Calendar({ onClickDay, isDisplayedDate, ...props }) {
   const currentDate = new Date();
   const dayCount = getDaysInMonth(currentDate);
 
@@ -37,7 +41,11 @@ function Calendar(props) {
       <div className="grid-container">
         {[...new Array(dayCount).keys()].map((dayIndex) => {
           return (
-            <CalendarDay isCurrent={currentDate.getDate() === dayIndex + 1}>
+            <CalendarDay
+            key={dayIndex}
+              onClick={() => onClickDay(dayIndex + 1)}
+              isCurrent={isDisplayedDate(dayIndex + 1)}
+            >
               {dayIndex + 1}
             </CalendarDay>
           );
@@ -127,7 +135,19 @@ function Backlog({ todos, todosRef, ...props }) {
 }
 
 function App({ todosRef }) {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
   const [todos, setTodos] = useState([]);
+  const [displayedDate, setDisplayedDate] = useState(today.toDateString());
+
+  const changeDisplayedDate = (dayOfMonth) => {
+    setDisplayedDate(new Date(year, month, dayOfMonth).toDateString());
+  };
+
+  const isDisplayedDate = (dayOfMonth) => {
+    return new Date(year, month, dayOfMonth).toDateString() === displayedDate;
+  };
 
   useEffect(() => {
     const unsubscribe = todosRef.orderBy("createdAt").onSnapshot((snapshot) => {
@@ -142,15 +162,18 @@ function App({ todosRef }) {
     return unsubscribe;
   }, [todosRef]);
 
-  const today = new Date().toDateString();
   const todosToday = todos.filter(
-    (t) => t.dueDate && t.dueDate.toDate().toDateString() === today
+    (t) => t.dueDate && t.dueDate.toDate().toDateString() === displayedDate
   );
   const backlogTodos = todos.filter((t) => !t.dueDate);
 
   return (
     <div className="flex">
-      <Calendar className="flex-grow-1" />
+      <Calendar
+        onClickDay={changeDisplayedDate}
+        isDisplayedDate={isDisplayedDate}
+        className="flex-grow-1"
+      />
       <Day todos={todosToday} todosRef={todosRef} className="flex-grow-1" />
       <Backlog
         todos={backlogTodos}
