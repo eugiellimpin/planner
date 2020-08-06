@@ -78,10 +78,38 @@ function Day({ date, todos, todosRef, ...props }) {
   );
 }
 
-function Backlog({ todos, todosRef, ...props }) {
+function TodoForm({ onAddTodo }) {
   const [isEditing, setIsEditing] = useState(false);
   const [todo, setTodo] = useState("");
 
+  return (
+    <div>
+      {isEditing && (
+        <textarea
+          value={todo}
+          onChange={(e) => setTodo(e.currentTarget.value)}
+        />
+      )}
+
+      <button
+        disabled={isEditing && todo.length < 1}
+        onClick={() => {
+          if (!isEditing) setIsEditing(true);
+
+          if (todo.trim().length > 0) {
+            onAddTodo(todo);
+            setTodo("");
+          }
+        }}
+      >
+        Add task
+      </button>
+      {isEditing && <button onClick={() => setIsEditing(false)}>Cancel</button>}
+    </div>
+  );
+}
+
+function Backlog({ onAddTodo, todos, todosRef, ...props }) {
   return (
     <div {...props}>
       <h2>Backlog</h2>
@@ -104,33 +132,7 @@ function Backlog({ todos, todosRef, ...props }) {
         ))}
       </ul>
 
-      {isEditing && (
-        <textarea
-          value={todo}
-          onChange={(e) => setTodo(e.currentTarget.value)}
-        />
-      )}
-
-      <button
-        disabled={isEditing && todo.length < 1}
-        onClick={() => {
-          if (!isEditing) setIsEditing(true);
-
-          if (todo.trim().length > 0) {
-            todosRef.add({
-              title: todo,
-              done: false,
-              createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-              // firebase.firestore.Timestamp.now();
-              dueDate: null,
-            });
-            setTodo("");
-          }
-        }}
-      >
-        Add task
-      </button>
-      {isEditing && <button onClick={() => setIsEditing(false)}>Cancel</button>}
+      <TodoForm onAddTodo={onAddTodo} />
     </div>
   );
 }
@@ -141,6 +143,16 @@ function App({ todosRef }) {
   const month = today.getMonth();
   const [todos, setTodos] = useState([]);
   const [displayedDate, setDisplayedDate] = useState(today);
+
+  const onAddTodo = (title) => {
+    todosRef.add({
+      title,
+      done: false,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      // firebase.firestore.Timestamp.now();
+      dueDate: null,
+    });
+  };
 
   const changeDisplayedDate = (dayOfMonth) => {
     setDisplayedDate(new Date(year, month, dayOfMonth));
@@ -182,8 +194,14 @@ function App({ todosRef }) {
         isDisplayedDate={isDisplayedDate}
         className="flex-grow-1"
       />
-      <Day date={displayedDate} todos={todosToday} todosRef={todosRef} className="flex-grow-1" />
+      <Day
+        date={displayedDate}
+        todos={todosToday}
+        todosRef={todosRef}
+        className="flex-grow-1"
+      />
       <Backlog
+        onAddTodo={onAddTodo}
         todos={backlogTodos}
         todosRef={todosRef}
         className="flex-grow-1"
