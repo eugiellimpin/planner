@@ -9,22 +9,76 @@ function createTimestamp(date) {
   return new firebase.firestore.Timestamp(Math.floor(date.getTime() / 1000), 0);
 }
 
-function Todo({ todo, onMove, onChangeIsDone, moveButtonPosition }) {
-  return (
+function Todo({ todo, onMove, onUpdate, moveButtonPosition }) {
+  const [isEditing, setIsEditing] = useState(false);
+
+  return isEditing ? (
+    <TodoForm
+      todo={todo}
+      onSave={(title) => {
+        onUpdate({ id: todo.id, title });
+        setIsEditing(false);
+      }}
+      onCancel={() => setIsEditing(false)}
+    />
+  ) : (
     <li>
       {moveButtonPosition === "left" && <button onClick={onMove}>{"<"}</button>}
 
       <input
         type="checkbox"
         checked={todo.done}
-        onChange={(e) => onChangeIsDone(e.currentTarget.checked)}
+        onChange={(e) =>
+          onUpdate({ id: todo.id, done: e.currentTarget.checked })
+        }
       />
-      {todo.title}
+      <span onClick={() => setIsEditing(true)}>{todo.title}</span>
 
       {moveButtonPosition === "right" && (
         <button onClick={onMove}>{">"}</button>
       )}
     </li>
+  );
+}
+
+function TodoForm({ onSave, todo, onCancel }) {
+  const [isEditing, setIsEditing] = useState(!!todo);
+  const [title, setTitle] = useState(!!todo ? todo.title : "");
+  const saveLabel = !!todo ? "Save" : "Add task";
+
+  return (
+    <div>
+      {isEditing && (
+        <textarea
+          value={title}
+          onChange={(e) => setTitle(e.currentTarget.value)}
+        />
+      )}
+
+      <button
+        disabled={isEditing && title.length < 1}
+        onClick={() => {
+          if (!isEditing) setIsEditing(true);
+
+          if (title.trim().length > 0) {
+            onSave(title);
+            setTitle("");
+          }
+        }}
+      >
+        {saveLabel}
+      </button>
+      {isEditing && (
+        <button
+          onClick={() => {
+            setIsEditing(false);
+            onCancel();
+          }}
+        >
+          Cancel
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -60,14 +114,14 @@ function Calendar({ onClickDay, isDisplayedDate, ...props }) {
   );
 }
 
-function TodosList({ todos, onChangeIsDone, onMove, moveButtonPosition }) {
+function TodoList({ todos, onMove, onUpdate, moveButtonPosition }) {
   return (
     <ul>
       {todos.map((t) => (
         <Todo
           todo={t}
-          onChangeIsDone={(isDone) => onChangeIsDone(t.id, isDone)}
           onMove={() => onMove(t.id)}
+          onUpdate={onUpdate}
           moveButtonPosition={moveButtonPosition}
           key={t.id}
         />
@@ -76,29 +130,25 @@ function TodosList({ todos, onChangeIsDone, onMove, moveButtonPosition }) {
   );
 }
 
-function Day({ date, todos, todosRef, onAddTodo, ...props }) {
-  const onChangeIsDone = (id, isDone) =>
-    todosRef.doc(id).update({ done: isDone });
+function Day({ date, todos, todosRef, onSave, onUpdate, ...props }) {
   const onMove = (id) => todosRef.doc(id).update({ dueDate: null });
 
   return (
     <div {...props}>
       <h2>{date.toDateString()}</h2>
-      <TodosList
+      <TodoList
         todos={todos}
-        onChangeIsDone={onChangeIsDone}
         onMove={onMove}
         moveButtonPosition="right"
+        onUpdate={onUpdate}
       />
 
-      <TodoForm onAddTodo={onAddTodo} />
+      <TodoForm onSave={onSave} />
     </div>
   );
 }
 
-function Backlog({ onAddTodo, todos, todosRef, displayedDate, ...props }) {
-  const onChangeIsDone = (id, isDone) =>
-    todosRef.doc(id).update({ done: isDone });
+function Backlog({ onSave, onUpdate, todos, todosRef, displayedDate, ...props }) {
   const onMove = (id) =>
     todosRef.doc(id).update({ dueDate: createTimestamp(displayedDate) });
 
@@ -106,45 +156,14 @@ function Backlog({ onAddTodo, todos, todosRef, displayedDate, ...props }) {
     <div {...props}>
       <h2>Backlog</h2>
 
-      <TodosList
+      <TodoList
         todos={todos}
-        onChangeIsDone={onChangeIsDone}
         onMove={onMove}
+        onUpdate={onUpdate}
         moveButtonPosition="left"
       />
 
-      <TodoForm onAddTodo={(todo) => onAddTodo(todo, null)} />
-    </div>
-  );
-}
-
-function TodoForm({ onAddTodo }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [todo, setTodo] = useState("");
-
-  return (
-    <div>
-      {isEditing && (
-        <textarea
-          value={todo}
-          onChange={(e) => setTodo(e.currentTarget.value)}
-        />
-      )}
-
-      <button
-        disabled={isEditing && todo.length < 1}
-        onClick={() => {
-          if (!isEditing) setIsEditing(true);
-
-          if (todo.trim().length > 0) {
-            onAddTodo(todo);
-            setTodo("");
-          }
-        }}
-      >
-        Add task
-      </button>
-      {isEditing && <button onClick={() => setIsEditing(false)}>Cancel</button>}
+      <TodoForm onSave={(todo) => onSave(todo, null)} />
     </div>
   );
 }
@@ -156,7 +175,12 @@ function App({ todosRef }) {
   const [todos, setTodos] = useState([]);
   const [displayedDate, setDisplayedDate] = useState(today);
 
-  const onAddTodo = (dueDate) => (title) => {
+  const onUpdate = ({ id, ...updatedTodo }) => {
+    console.log('im here', id, updatedTodo)
+    todosRef.doc(id).update(updatedTodo);
+  };
+
+  const onSave = (dueDate) => (title) => {
     todosRef.add({
       title,
       done: false,
@@ -209,11 +233,13 @@ function App({ todosRef }) {
         date={displayedDate}
         todos={todosToday}
         todosRef={todosRef}
-        onAddTodo={onAddTodo(createTimestamp(displayedDate))}
+        onSave={onSave(createTimestamp(displayedDate))}
+        onUpdate={onUpdate}
         className="flex-grow-1"
       />
       <Backlog
-        onAddTodo={onAddTodo(null)}
+        onSave={onSave(null)}
+        onUpdate={onUpdate}
         todos={backlogTodos}
         todosRef={todosRef}
         className="flex-grow-1"
