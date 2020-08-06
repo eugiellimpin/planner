@@ -5,6 +5,10 @@ import isDate from "date-fns/isDate";
 
 import "./index.css";
 
+function createTimestamp(date) {
+  return new firebase.firestore.Timestamp(Math.floor(date.getTime() / 1000), 0);
+}
+
 function Todo({ todo, onMove, onChangeIsDone, moveButtonPosition }) {
   return (
     <li>
@@ -87,17 +91,16 @@ function Day({ date, todos, todosRef, onAddTodo, ...props }) {
         moveButtonPosition="right"
       />
 
-      <TodoForm onAddTodo={todo => onAddTodo(todo, firebase.firestore.Timestamp.now())} />
+      <TodoForm onAddTodo={onAddTodo} />
     </div>
   );
 }
 
-function Backlog({ onAddTodo, todos, todosRef, ...props }) {
+function Backlog({ onAddTodo, todos, todosRef, displayedDate, ...props }) {
   const onChangeIsDone = (id, isDone) =>
     todosRef.doc(id).update({ done: isDone });
-  const onMove = (id) => todosRef
-                .doc(id)
-                .update({ dueDate: firebase.firestore.Timestamp.now() });
+  const onMove = (id) =>
+    todosRef.doc(id).update({ dueDate: createTimestamp(displayedDate) });
 
   return (
     <div {...props}>
@@ -110,7 +113,7 @@ function Backlog({ onAddTodo, todos, todosRef, ...props }) {
         moveButtonPosition="left"
       />
 
-      <TodoForm onAddTodo={todo => onAddTodo(todo, null)} />
+      <TodoForm onAddTodo={(todo) => onAddTodo(todo, null)} />
     </div>
   );
 }
@@ -153,12 +156,11 @@ function App({ todosRef }) {
   const [todos, setTodos] = useState([]);
   const [displayedDate, setDisplayedDate] = useState(today);
 
-  const onAddTodo = (title, dueDate) => {
+  const onAddTodo = (dueDate) => (title) => {
     todosRef.add({
       title,
       done: false,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      // firebase.firestore.Timestamp.now();
       dueDate,
     });
   };
@@ -207,11 +209,11 @@ function App({ todosRef }) {
         date={displayedDate}
         todos={todosToday}
         todosRef={todosRef}
-        onAddTodo={onAddTodo}
+        onAddTodo={onAddTodo(createTimestamp(displayedDate))}
         className="flex-grow-1"
       />
       <Backlog
-        onAddTodo={onAddTodo}
+        onAddTodo={onAddTodo(null)}
         todos={backlogTodos}
         todosRef={todosRef}
         className="flex-grow-1"
