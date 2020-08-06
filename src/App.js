@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import * as firebase from "firebase/app";
 import getDaysInMonth from "date-fns/getDaysInMonth";
+import isDate from "date-fns/isDate";
 
 import "./index.css";
 
@@ -42,7 +43,7 @@ function Calendar({ onClickDay, isDisplayedDate, ...props }) {
         {[...new Array(dayCount).keys()].map((dayIndex) => {
           return (
             <CalendarDay
-            key={dayIndex}
+              key={dayIndex}
               onClick={() => onClickDay(dayIndex + 1)}
               isCurrent={isDisplayedDate(dayIndex + 1)}
             >
@@ -58,7 +59,7 @@ function Calendar({ onClickDay, isDisplayedDate, ...props }) {
 function Day({ todos, todosRef, ...props }) {
   return (
     <div {...props}>
-      <h2>Current day</h2>
+      <h2></h2>
 
       <ul>
         {todos.map((t) => (
@@ -139,14 +140,21 @@ function App({ todosRef }) {
   const year = today.getFullYear();
   const month = today.getMonth();
   const [todos, setTodos] = useState([]);
-  const [displayedDate, setDisplayedDate] = useState(today.toDateString());
+  const [displayedDate, setDisplayedDate] = useState(today);
 
   const changeDisplayedDate = (dayOfMonth) => {
-    setDisplayedDate(new Date(year, month, dayOfMonth).toDateString());
+    setDisplayedDate(new Date(year, month, dayOfMonth));
   };
 
   const isDisplayedDate = (dayOfMonth) => {
-    return new Date(year, month, dayOfMonth).toDateString() === displayedDate;
+    if (isDate(dayOfMonth)) {
+      return dayOfMonth.toDateString() === displayedDate.toDateString();
+    }
+
+    return (
+      new Date(year, month, dayOfMonth).toDateString() ===
+      displayedDate.toDateString()
+    );
   };
 
   useEffect(() => {
@@ -163,7 +171,7 @@ function App({ todosRef }) {
   }, [todosRef]);
 
   const todosToday = todos.filter(
-    (t) => t.dueDate && t.dueDate.toDate().toDateString() === displayedDate
+    (t) => t.dueDate && isDisplayedDate(t.dueDate.toDate())
   );
   const backlogTodos = todos.filter((t) => !t.dueDate);
 
