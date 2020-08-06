@@ -56,24 +56,59 @@ function Calendar({ onClickDay, isDisplayedDate, ...props }) {
   );
 }
 
+function TodosList({ todos, onChangeIsDone, onMove, moveButtonPosition }) {
+  return (
+    <ul>
+      {todos.map((t) => (
+        <Todo
+          todo={t}
+          onChangeIsDone={(isDone) => onChangeIsDone(t.id, isDone)}
+          onMove={() => onMove(t.id)}
+          moveButtonPosition={moveButtonPosition}
+          key={t.id}
+        />
+      ))}
+    </ul>
+  );
+}
+
 function Day({ date, todos, todosRef, ...props }) {
+  const onChangeIsDone = (id, isDone) =>
+    todosRef.doc(id).update({ done: isDone });
+  const onMove = (id) => todosRef.doc(id).update({ dueDate: null });
+
   return (
     <div {...props}>
       <h2>{date.toDateString()}</h2>
+      <TodosList
+        todos={todos}
+        onChangeIsDone={onChangeIsDone}
+        onMove={onMove}
+        moveButtonPosition="right"
+      />
+    </div>
+  );
+}
 
-      <ul>
-        {todos.map((t) => (
-          <Todo
-            todo={t}
-            onChangeIsDone={(isDone) =>
-              todosRef.doc(t.id).update({ done: isDone })
-            }
-            onMove={() => todosRef.doc(t.id).update({ dueDate: null })}
-            moveButtonPosition="right"
-            key={t.id}
-          />
-        ))}
-      </ul>
+function Backlog({ onAddTodo, todos, todosRef, ...props }) {
+  const onChangeIsDone = (id, isDone) =>
+    todosRef.doc(id).update({ done: isDone });
+  const onMove = (id) => todosRef
+                .doc(id)
+                .update({ dueDate: firebase.firestore.Timestamp.now() });
+
+  return (
+    <div {...props}>
+      <h2>Backlog</h2>
+
+      <TodosList
+        todos={todos}
+        onChangeIsDone={onChangeIsDone}
+        onMove={onMove}
+        moveButtonPosition="left"
+      />
+
+      <TodoForm onAddTodo={onAddTodo} />
     </div>
   );
 }
@@ -105,34 +140,6 @@ function TodoForm({ onAddTodo }) {
         Add task
       </button>
       {isEditing && <button onClick={() => setIsEditing(false)}>Cancel</button>}
-    </div>
-  );
-}
-
-function Backlog({ onAddTodo, todos, todosRef, ...props }) {
-  return (
-    <div {...props}>
-      <h2>Backlog</h2>
-
-      <ul>
-        {todos.map((t) => (
-          <Todo
-            todo={t}
-            onChangeIsDone={(isDone) =>
-              todosRef.doc(t.id).update({ done: isDone })
-            }
-            onMove={() =>
-              todosRef
-                .doc(t.id)
-                .update({ dueDate: firebase.firestore.Timestamp.now() })
-            }
-            moveButtonPosition="left"
-            key={t.id}
-          />
-        ))}
-      </ul>
-
-      <TodoForm onAddTodo={onAddTodo} />
     </div>
   );
 }
