@@ -9,7 +9,7 @@ function createTimestamp(date) {
   return new firebase.firestore.Timestamp(Math.floor(date.getTime() / 1000), 0);
 }
 
-function Todo({ todo, onMove, onUpdate, moveButtonPosition }) {
+function Todo({ todo, onMove, onUpdate, onDelete, moveButtonPosition }) {
   const [isEditing, setIsEditing] = useState(false);
 
   return isEditing ? (
@@ -33,6 +33,8 @@ function Todo({ todo, onMove, onUpdate, moveButtonPosition }) {
         }
       />
       <span onClick={() => setIsEditing(true)}>{todo.title}</span>
+
+      <button onClick={() => onDelete(todo.id)}>delete</button>
 
       {moveButtonPosition === "right" && (
         <button onClick={onMove}>{">"}</button>
@@ -114,7 +116,7 @@ function Calendar({ onClickDay, isDisplayedDate, ...props }) {
   );
 }
 
-function TodoList({ todos, onMove, onUpdate, moveButtonPosition }) {
+function TodoList({ todos, onMove, onUpdate, onDelete, moveButtonPosition }) {
   return (
     <ul>
       {todos.map((t) => (
@@ -122,6 +124,7 @@ function TodoList({ todos, onMove, onUpdate, moveButtonPosition }) {
           todo={t}
           onMove={() => onMove(t.id)}
           onUpdate={onUpdate}
+          onDelete={onDelete}
           moveButtonPosition={moveButtonPosition}
           key={t.id}
         />
@@ -130,7 +133,7 @@ function TodoList({ todos, onMove, onUpdate, moveButtonPosition }) {
   );
 }
 
-function Day({ date, todos, todosRef, onSave, onUpdate, ...props }) {
+function Day({ date, todos, todosRef, onSave, onUpdate, onDelete, ...props }) {
   const onMove = (id) => todosRef.doc(id).update({ dueDate: null });
 
   return (
@@ -141,6 +144,7 @@ function Day({ date, todos, todosRef, onSave, onUpdate, ...props }) {
         onMove={onMove}
         moveButtonPosition="right"
         onUpdate={onUpdate}
+        onDelete={onDelete}
       />
 
       <TodoForm onSave={onSave} />
@@ -148,7 +152,15 @@ function Day({ date, todos, todosRef, onSave, onUpdate, ...props }) {
   );
 }
 
-function Backlog({ onSave, onUpdate, todos, todosRef, displayedDate, ...props }) {
+function Backlog({
+  onSave,
+  onUpdate,
+  todos,
+  todosRef,
+  displayedDate,
+  onDelete,
+  ...props
+}) {
   const onMove = (id) =>
     todosRef.doc(id).update({ dueDate: createTimestamp(displayedDate) });
 
@@ -160,6 +172,7 @@ function Backlog({ onSave, onUpdate, todos, todosRef, displayedDate, ...props })
         todos={todos}
         onMove={onMove}
         onUpdate={onUpdate}
+        onDelete={onDelete}
         moveButtonPosition="left"
       />
 
@@ -175,8 +188,11 @@ function App({ todosRef }) {
   const [todos, setTodos] = useState([]);
   const [displayedDate, setDisplayedDate] = useState(today);
 
+  const onDelete = (id) => {
+    todosRef.doc(id).delete();
+  };
+
   const onUpdate = ({ id, ...updatedTodo }) => {
-    console.log('im here', id, updatedTodo)
     todosRef.doc(id).update(updatedTodo);
   };
 
@@ -235,11 +251,13 @@ function App({ todosRef }) {
         todosRef={todosRef}
         onSave={onSave(createTimestamp(displayedDate))}
         onUpdate={onUpdate}
+        onDelete={onDelete}
         className="flex-grow-1"
       />
       <Backlog
         onSave={onSave(null)}
         onUpdate={onUpdate}
+        onDelete={onDelete}
         todos={backlogTodos}
         todosRef={todosRef}
         className="flex-grow-1"
