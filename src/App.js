@@ -56,10 +56,10 @@ function Calendar({ onClickDay, isDisplayedDate, ...props }) {
   );
 }
 
-function Day({ todos, todosRef, ...props }) {
+function Day({ date, todos, todosRef, ...props }) {
   return (
     <div {...props}>
-      <h2></h2>
+      <h2>{date.toDateString()}</h2>
 
       <ul>
         {todos.map((t) => (
@@ -182,7 +182,7 @@ function App({ todosRef }) {
         isDisplayedDate={isDisplayedDate}
         className="flex-grow-1"
       />
-      <Day todos={todosToday} todosRef={todosRef} className="flex-grow-1" />
+      <Day date={displayedDate} todos={todosToday} todosRef={todosRef} className="flex-grow-1" />
       <Backlog
         todos={backlogTodos}
         todosRef={todosRef}
