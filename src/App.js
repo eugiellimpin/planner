@@ -72,7 +72,7 @@ function TodosList({ todos, onChangeIsDone, onMove, moveButtonPosition }) {
   );
 }
 
-function Day({ date, todos, todosRef, ...props }) {
+function Day({ date, todos, todosRef, onAddTodo, ...props }) {
   const onChangeIsDone = (id, isDone) =>
     todosRef.doc(id).update({ done: isDone });
   const onMove = (id) => todosRef.doc(id).update({ dueDate: null });
@@ -86,6 +86,8 @@ function Day({ date, todos, todosRef, ...props }) {
         onMove={onMove}
         moveButtonPosition="right"
       />
+
+      <TodoForm onAddTodo={todo => onAddTodo(todo, firebase.firestore.Timestamp.now())} />
     </div>
   );
 }
@@ -108,7 +110,7 @@ function Backlog({ onAddTodo, todos, todosRef, ...props }) {
         moveButtonPosition="left"
       />
 
-      <TodoForm onAddTodo={onAddTodo} />
+      <TodoForm onAddTodo={todo => onAddTodo(todo, null)} />
     </div>
   );
 }
@@ -151,13 +153,13 @@ function App({ todosRef }) {
   const [todos, setTodos] = useState([]);
   const [displayedDate, setDisplayedDate] = useState(today);
 
-  const onAddTodo = (title) => {
+  const onAddTodo = (title, dueDate) => {
     todosRef.add({
       title,
       done: false,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       // firebase.firestore.Timestamp.now();
-      dueDate: null,
+      dueDate,
     });
   };
 
@@ -205,6 +207,7 @@ function App({ todosRef }) {
         date={displayedDate}
         todos={todosToday}
         todosRef={todosRef}
+        onAddTodo={onAddTodo}
         className="flex-grow-1"
       />
       <Backlog
