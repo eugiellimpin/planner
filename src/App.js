@@ -3,8 +3,6 @@ import * as firebase from "firebase/app";
 import getDaysInMonth from "date-fns/getDaysInMonth";
 import isDate from "date-fns/isDate";
 
-import "./index.css";
-
 function createTimestamp(date) {
   return new firebase.firestore.Timestamp(Math.floor(date.getTime() / 1000), 0);
 }
