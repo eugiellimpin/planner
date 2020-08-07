@@ -74,7 +74,7 @@ function TodoForm({ onSave, todo, onCancel }) {
         <button
           onClick={() => {
             setIsEditing(false);
-            onCancel();
+            onCancel && onCancel();
           }}
         >
           Cancel
