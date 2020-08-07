@@ -1,0 +1,15 @@
+@tailwind base;
+
+@tailwind components;
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+}
+
+.bg-lightRed {
+  background-color: #ffcdd2;
+}
+
+@tailwind utilities;

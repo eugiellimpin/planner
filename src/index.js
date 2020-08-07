@@ -5,7 +5,7 @@ import 'firebase/firestore';
 
 import App from './App';
 
-import './index.css';
+import './styles/tailwind.css';
 
 
 firebase.initializeApp({
