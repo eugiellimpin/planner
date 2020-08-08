@@ -258,6 +258,7 @@ function App({ todosRef }) {
         onDelete={onDelete}
         todos={backlogTodos}
         todosRef={todosRef}
+        displayedDate={displayedDate}
         className="flex-grow-1"
       />
     </div>
