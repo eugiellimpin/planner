@@ -7,6 +7,14 @@ import { ReactComponent as PushLeftIcon } from "./assets/push_left.svg";
 import { ReactComponent as PushRightIcon } from "./assets/push_right.svg";
 import { ReactComponent as DeleteIcon } from "./assets/trash.svg";
 
+function IconButton({ children, ...props }) {
+  return (
+    <button {...props} className="hover:bg-gray-300 p-1 rounded">
+      {children}
+    </button>
+  );
+}
+
 function createTimestamp(date) {
   return new firebase.firestore.Timestamp(Math.floor(date.getTime() / 1000), 0);
 }
@@ -24,11 +32,11 @@ function Todo({ todo, onMove, onUpdate, onDelete, moveButtonPosition }) {
       onCancel={() => setIsEditing(false)}
     />
   ) : (
-    <li>
+    <li className="flex items-center h-12 px-2 hover:bg-gray-100">
       {moveButtonPosition === "left" && (
-        <button onClick={onMove}>
+        <IconButton onClick={onMove}>
           <PushLeftIcon />
-        </button>
+        </IconButton>
       )}
 
       <input
@@ -38,15 +46,21 @@ function Todo({ todo, onMove, onUpdate, onDelete, moveButtonPosition }) {
           onUpdate({ id: todo.id, done: e.currentTarget.checked })
         }
       />
-      <span onClick={() => setIsEditing(true)}>{todo.title}</span>
+      <span onClick={() => setIsEditing(true)} className="flex-grow px-2">
+        {todo.title}
+      </span>
 
-      <button onClick={() => onDelete(todo.id)}><DeleteIcon /></button>
+      <span>
+        <IconButton onClick={() => onDelete(todo.id)}>
+          <DeleteIcon />
+        </IconButton>
 
-      {moveButtonPosition === "right" && (
-        <button onClick={onMove}>
-          <PushRightIcon />
-        </button>
-      )}
+        {moveButtonPosition === "right" && (
+          <IconButton onClick={onMove}>
+            <PushRightIcon />
+          </IconButton>
+        )}
+      </span>
     </li>
   );
 }
