@@ -274,7 +274,7 @@ function App({ todosRef }) {
       <Calendar
         onClickDay={changeDisplayedDate}
         isDisplayedDate={isDisplayedDate}
-        className="p-2 flex-grow"
+        className="column"
       />
       <Day
         date={displayedDate}
@@ -283,7 +283,7 @@ function App({ todosRef }) {
         onSave={onSave(createTimestamp(displayedDate))}
         onUpdate={onUpdate}
         onDelete={onDelete}
-        className="p-2 flex-grow"
+        className="column"
       />
       <Backlog
         onSave={onSave(null)}
@@ -292,7 +292,7 @@ function App({ todosRef }) {
         todos={backlogTodos}
         todosRef={todosRef}
         displayedDate={displayedDate}
-        className="p-2 flex-grow"
+        className="column"
       />
     </div>
   );
