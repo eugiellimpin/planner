@@ -2,14 +2,18 @@ import React, { useState, useEffect } from "react";
 import * as firebase from "firebase/app";
 import getDaysInMonth from "date-fns/getDaysInMonth";
 import isDate from "date-fns/isDate";
+import c from "classnames";
 
 import { ReactComponent as PushLeftIcon } from "./assets/push_left.svg";
 import { ReactComponent as PushRightIcon } from "./assets/push_right.svg";
 import { ReactComponent as DeleteIcon } from "./assets/trash.svg";
 
-function IconButton({ children, ...props }) {
+function IconButton({ children, className, ...props }) {
   return (
-    <button {...props} className="hover:bg-gray-300 p-1 rounded">
+    <button
+      {...props}
+      className={c("hover:bg-gray-300 p-1 rounded", className)}
+    >
       {children}
     </button>
   );
@@ -34,7 +38,7 @@ function Todo({ todo, onMove, onUpdate, onDelete, moveButtonPosition }) {
   ) : (
     <li className="flex items-center h-12 px-2 hover:bg-gray-100">
       {moveButtonPosition === "left" && (
-        <IconButton onClick={onMove}>
+        <IconButton onClick={onMove} className="mr-1">
           <PushLeftIcon />
         </IconButton>
       )}
@@ -51,12 +55,12 @@ function Todo({ todo, onMove, onUpdate, onDelete, moveButtonPosition }) {
       </span>
 
       <span>
-        <IconButton onClick={() => onDelete(todo.id)}>
+        <IconButton onClick={() => onDelete(todo.id)} className="mr-1">
           <DeleteIcon />
         </IconButton>
 
         {moveButtonPosition === "right" && (
-          <IconButton onClick={onMove}>
+          <IconButton onClick={onMove} >
             <PushRightIcon />
           </IconButton>
         )}
