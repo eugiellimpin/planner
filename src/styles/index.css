@@ -1,5 +1,9 @@
 @tailwind base;
 
+:root {
+  font-size: 16px;
+}
+
 @tailwind components;
 
 .grid-container {
