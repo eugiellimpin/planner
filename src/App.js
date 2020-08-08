@@ -3,6 +3,10 @@ import * as firebase from "firebase/app";
 import getDaysInMonth from "date-fns/getDaysInMonth";
 import isDate from "date-fns/isDate";
 
+import { ReactComponent as PushLeftIcon } from "./assets/push_left.svg";
+import { ReactComponent as PushRightIcon } from "./assets/push_right.svg";
+import { ReactComponent as DeleteIcon } from "./assets/trash.svg";
+
 function createTimestamp(date) {
   return new firebase.firestore.Timestamp(Math.floor(date.getTime() / 1000), 0);
 }
@@ -21,7 +25,11 @@ function Todo({ todo, onMove, onUpdate, onDelete, moveButtonPosition }) {
     />
   ) : (
     <li>
-      {moveButtonPosition === "left" && <button onClick={onMove}>{"<"}</button>}
+      {moveButtonPosition === "left" && (
+        <button onClick={onMove}>
+          <PushLeftIcon />
+        </button>
+      )}
 
       <input
         type="checkbox"
@@ -32,10 +40,12 @@ function Todo({ todo, onMove, onUpdate, onDelete, moveButtonPosition }) {
       />
       <span onClick={() => setIsEditing(true)}>{todo.title}</span>
 
-      <button onClick={() => onDelete(todo.id)}>delete</button>
+      <button onClick={() => onDelete(todo.id)}><DeleteIcon /></button>
 
       {moveButtonPosition === "right" && (
-        <button onClick={onMove}>{">"}</button>
+        <button onClick={onMove}>
+          <PushRightIcon />
+        </button>
       )}
     </li>
   );
