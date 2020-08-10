@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import * as firebase from "firebase/app";
 import isDate from "date-fns/isDate";
 import c from "classnames";
+import format from "date-fns/format";
 
 import { ReactComponent as PushLeftIcon } from "./assets/push_left.svg";
 import { ReactComponent as PushRightIcon } from "./assets/push_right.svg";
@@ -137,7 +138,7 @@ function Day({ date, todos, todosRef, onSave, onUpdate, onDelete, ...props }) {
 
   return (
     <div {...props}>
-      <h2>{date.toDateString()}</h2>
+      <h2 className="column--header">{format(date, "EEE dd MMM")}</h2>
       <TodoList
         todos={todos}
         onMove={onMove}
@@ -165,7 +166,7 @@ function Backlog({
 
   return (
     <div {...props}>
-      <h2>Backlog</h2>
+      <h2 className="column--header">Inbox</h2>
 
       <TodoList
         todos={todos}
@@ -221,14 +222,17 @@ function Dashboard({ todosRef, user, onLogout }) {
   };
 
   useEffect(() => {
-    const unsubscribe = todosRef.where('uid', '==', user.uid).orderBy("createdAt").onSnapshot((snapshot) => {
-      const fetchedTodos = [];
-      snapshot.forEach((t) => {
-        fetchedTodos.push({ id: t.id, ...t.data() });
-      });
+    const unsubscribe = todosRef
+      .where("uid", "==", user.uid)
+      .orderBy("createdAt")
+      .onSnapshot((snapshot) => {
+        const fetchedTodos = [];
+        snapshot.forEach((t) => {
+          fetchedTodos.push({ id: t.id, ...t.data() });
+        });
 
-      setTodos(fetchedTodos);
-    });
+        setTodos(fetchedTodos);
+      });
 
     return unsubscribe;
   }, [todosRef, user]);

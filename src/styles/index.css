@@ -6,19 +6,13 @@
 
 @tailwind components;
 
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(7, 1fr);
-}
-
 .column {
   @apply flex-grow p-2;
-  max-width: 33.333333333%;
+  max-width: calc(100% / 3);
 }
 
-.bg-lightRed {
-  background-color: #ffcdd2;
+.column--header {
+  @apply font-bold text-center mb-4;
 }
 
 @tailwind utilities;
