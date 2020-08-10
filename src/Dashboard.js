@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import * as firebase from "firebase/app";
-import getDaysInMonth from "date-fns/getDaysInMonth";
 import isDate from "date-fns/isDate";
 import c from "classnames";
 
 import { ReactComponent as PushLeftIcon } from "./assets/push_left.svg";
 import { ReactComponent as PushRightIcon } from "./assets/push_right.svg";
 import { ReactComponent as DeleteIcon } from "./assets/trash.svg";
+import Calendar from "./components/Calendar";
 
 function IconButton({ children, className, ...props }) {
   return (
@@ -112,38 +112,6 @@ function TodoForm({ onSave, todo, onCancel }) {
         )}
       </div>
     </li>
-  );
-}
-
-function CalendarDay({ onClick, isCurrent, children }) {
-  return (
-    <div onClick={onClick} className={isCurrent ? "bg-lightRed" : ""}>
-      {children}
-    </div>
-  );
-}
-
-function Calendar({ onClickDay, isDisplayedDate, ...props }) {
-  const currentDate = new Date();
-  const dayCount = getDaysInMonth(currentDate);
-
-  return (
-    <div {...props}>
-      <h2>Calendar</h2>
-      <div className="grid-container">
-        {[...new Array(dayCount).keys()].map((dayIndex) => {
-          return (
-            <CalendarDay
-              key={dayIndex}
-              onClick={() => onClickDay(dayIndex + 1)}
-              isCurrent={isDisplayedDate(dayIndex + 1)}
-            >
-              {dayIndex + 1}
-            </CalendarDay>
-          );
-        })}
-      </div>
-    </div>
   );
 }
 
