@@ -233,6 +233,7 @@ function Dashboard({ todosRef, user, onLogout }) {
       done: false,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       dueDate,
+      uid: user.uid,
     });
   };
 
@@ -252,7 +253,7 @@ function Dashboard({ todosRef, user, onLogout }) {
   };
 
   useEffect(() => {
-    const unsubscribe = todosRef.orderBy("createdAt").onSnapshot((snapshot) => {
+    const unsubscribe = todosRef.where('uid', '==', user.uid).orderBy("createdAt").onSnapshot((snapshot) => {
       const fetchedTodos = [];
       snapshot.forEach((t) => {
         fetchedTodos.push({ id: t.id, ...t.data() });
@@ -262,7 +263,7 @@ function Dashboard({ todosRef, user, onLogout }) {
     });
 
     return unsubscribe;
-  }, [todosRef]);
+  }, [todosRef, user]);
 
   const todosToday = todos.filter(
     (t) => t.dueDate && isDisplayedDate(t.dueDate.toDate())
