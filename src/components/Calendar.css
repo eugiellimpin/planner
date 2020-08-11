@@ -3,9 +3,3 @@
   grid-template-columns: repeat(7, 1fr);
   grid-template-rows: repeat(5, 1fr);
 }
-
-.calendar--day {
-  /* https://stackoverflow.com/questions/5445491/height-equal-to-dynamic-width-css-fluid-layout */
-  height: 0;
-  padding-bottom: 100%;
-}

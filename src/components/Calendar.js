@@ -1,15 +1,26 @@
-import React from "react";
+import React, { useRef } from "react";
 import c from "classnames";
 import getDaysInMonth from "date-fns/getDaysInMonth";
 import format from "date-fns/format";
 
 import './Calendar.css'
+import { useEffect } from "react";
 
 function CalendarDay({ onClick, isCurrent, children }) {
+  const ref = useRef();
+
+  useEffect(() => {
+    if (ref.current) {
+      const width = ref.current.getBoundingClientRect().width;
+      ref.current.style.height = `${width}px`;
+    }
+  }, [])
+
   return (
     <div
       onClick={onClick}
-      className={c("calendar--day", isCurrent ? "bg-lightRed" : "")}
+      className={c('p-1 text-xs hover:bg-gray-200 cursor-pointer border', isCurrent && "bg-green-200")}
+      ref={ref}
     >
       {children}
     </div>
