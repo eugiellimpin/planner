@@ -244,9 +244,9 @@ function Dashboard({ todosRef, user, onLogout }) {
 
   return (
     <div>
-      <nav>
-        Current logged in user: {user.displayName} ({user.email})
-        <button onClick={onLogout}>Logout</button>
+      <nav className="flex justify-between items-center h-12 bg-gray-200 shadow-md px-4">
+        Hello {user.displayName}! 👋
+        <button className="text-sm text-gray-600 hover:underline" onClick={onLogout}>Logout</button>
       </nav>
       <div className="flex">
         <Calendar
