@@ -83,7 +83,7 @@ function TodoForm({ onSave, todo, onCancel }) {
           <input
             value={title}
             onChange={(e) => setTitle(e.currentTarget.value)}
-            className="rounded border border-gray-600 p-2"
+            className="w-full rounded border border-gray-400 p-2 focus:border-gray-600 focus:outline-none"
           />
         )}
 
