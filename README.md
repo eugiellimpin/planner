@@ -19,3 +19,11 @@ Then run the app
 ```
 $ yarn start
 ```
+
+# Release notes
+
+## Aug 13
+
+- navbar is now white
+- press enter to add a new task after typing the title
+- focus input automatically when adding a new task
