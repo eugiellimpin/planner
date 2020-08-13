@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import * as firebase from "firebase/app";
 import isDate from "date-fns/isDate";
 import c from "classnames";
@@ -76,11 +76,20 @@ function TodoForm({ onSave, todo, onCancel }) {
   const [title, setTitle] = useState(!!todo ? todo.title : "");
   const saveLabel = !!todo ? "Save" : "Add task";
 
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [isEditing, inputRef])
+
   return (
     <li className="flex flex-col">
       <form>
         {isEditing && (
           <input
+            ref={inputRef}
             value={title}
             onChange={(e) => setTitle(e.currentTarget.value)}
             className="w-full rounded border border-gray-400 p-2 focus:border-gray-600 focus:outline-none"
