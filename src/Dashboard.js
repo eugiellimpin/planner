@@ -8,6 +8,7 @@ import { ReactComponent as PushLeftIcon } from "./assets/push_left.svg";
 import { ReactComponent as PushRightIcon } from "./assets/push_right.svg";
 import { ReactComponent as DeleteIcon } from "./assets/trash.svg";
 import Calendar from "./components/Calendar";
+import Navbar from "./components/Navbar";
 
 function IconButton({ children, className, ...props }) {
   return (
@@ -244,10 +245,7 @@ function Dashboard({ todosRef, user, onLogout }) {
 
   return (
     <div>
-      <nav className="flex justify-between items-center h-12 bg-gray-200 shadow-md px-4">
-        Hello {user.displayName}! 👋
-        <button className="text-sm text-gray-600 hover:underline" onClick={onLogout}>Logout</button>
-      </nav>
+      <Navbar user={user} onLogout={onLogout} />
       <div className="flex">
         <Calendar
           onClickDay={changeDisplayedDate}
