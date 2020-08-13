@@ -78,41 +78,43 @@ function TodoForm({ onSave, todo, onCancel }) {
 
   return (
     <li className="flex flex-col">
-      {isEditing && (
-        <textarea
-          value={title}
-          onChange={(e) => setTitle(e.currentTarget.value)}
-          className="rounded border border-gray-600 p-2"
-        />
-      )}
-
-      <div className="mt-2">
-        <button
-          disabled={isEditing && title.length < 1}
-          onClick={() => {
-            if (!isEditing) setIsEditing(true);
-
-            if (title.trim().length > 0) {
-              onSave(title);
-              setTitle("");
-            }
-          }}
-          className="px-2 py-1 rounded bg-green-600 text-white font-bold focus:outline-none"
-        >
-          {saveLabel}
-        </button>
+      <form>
         {isEditing && (
-          <button
-            onClick={() => {
-              setIsEditing(false);
-              onCancel && onCancel();
-            }}
-            className="px-2 py-1 text-gray-700 hover:underline focus:outline-none"
-          >
-            Cancel
-          </button>
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.currentTarget.value)}
+            className="rounded border border-gray-600 p-2"
+          />
         )}
-      </div>
+
+        <div className="mt-2">
+          <button
+            disabled={isEditing && title.length < 1}
+            onClick={() => {
+              if (!isEditing) setIsEditing(true);
+
+              if (title.trim().length > 0) {
+                onSave(title);
+                setTitle("");
+              }
+            }}
+            className="px-2 py-1 rounded bg-green-600 text-white font-bold focus:outline-none"
+          >
+            {saveLabel}
+          </button>
+          {isEditing && (
+            <button
+              onClick={() => {
+                setIsEditing(false);
+                onCancel && onCancel();
+              }}
+              className="px-2 py-1 text-gray-700 hover:underline focus:outline-none"
+            >
+              Cancel
+            </button>
+          )}
+        </div>
+      </form>
     </li>
   );
 }
