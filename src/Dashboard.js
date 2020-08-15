@@ -9,6 +9,7 @@ import { ReactComponent as PushRightIcon } from "./assets/push_right.svg";
 import { ReactComponent as DeleteIcon } from "./assets/trash.svg";
 import Calendar from "./components/Calendar";
 import Navbar from "./components/Navbar";
+import Column from "./components/Column";
 
 function IconButton({ children, className, ...props }) {
   return (
@@ -80,9 +81,9 @@ function TodoForm({ onSave, todo, onCancel }) {
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
-      inputRef.current.focus()
+      inputRef.current.focus();
     }
-  }, [isEditing, inputRef])
+  }, [isEditing, inputRef]);
 
   return (
     <li className="flex flex-col">
@@ -145,11 +146,11 @@ function TodoList({ todos, onMove, onUpdate, onDelete, moveButtonPosition }) {
   );
 }
 
-function Day({ date, todos, todosRef, onSave, onUpdate, onDelete, ...props }) {
+function Day({ date, todos, todosRef, onSave, onUpdate, onDelete }) {
   const onMove = (id) => todosRef.doc(id).update({ dueDate: null });
 
   return (
-    <div {...props}>
+    <Column>
       <h2 className="column--header">{format(date, "EEE dd MMM")}</h2>
       <TodoList
         todos={todos}
@@ -160,7 +161,7 @@ function Day({ date, todos, todosRef, onSave, onUpdate, onDelete, ...props }) {
       />
 
       <TodoForm onSave={onSave} />
-    </div>
+    </Column>
   );
 }
 
@@ -171,13 +172,12 @@ function Backlog({
   todosRef,
   displayedDate,
   onDelete,
-  ...props
 }) {
   const onMove = (id) =>
     todosRef.doc(id).update({ dueDate: createTimestamp(displayedDate) });
 
   return (
-    <div {...props}>
+    <Column className="hidden lg:block">
       <h2 className="column--header">Inbox</h2>
 
       <TodoList
@@ -189,7 +189,7 @@ function Backlog({
       />
 
       <TodoForm onSave={(todo) => onSave(todo, null)} />
-    </div>
+    </Column>
   );
 }
 
@@ -257,11 +257,10 @@ function Dashboard({ todosRef, user, onLogout }) {
   return (
     <div>
       <Navbar user={user} onLogout={onLogout} />
-      <div className="flex">
+      <div className="flex flex-col lg:flex-row">
         <Calendar
           onClickDay={changeDisplayedDate}
           isDisplayedDate={isDisplayedDate}
-          className="column"
         />
         <Day
           date={displayedDate}
@@ -270,7 +269,7 @@ function Dashboard({ todosRef, user, onLogout }) {
           onSave={onSave(createTimestamp(displayedDate))}
           onUpdate={onUpdate}
           onDelete={onDelete}
-          className="column"
+          className="column h-screen flex-1 border-r px-4 pt-8"
         />
         <Backlog
           onSave={onSave(null)}
@@ -279,7 +278,6 @@ function Dashboard({ todosRef, user, onLogout }) {
           todos={backlogTodos}
           todosRef={todosRef}
           displayedDate={displayedDate}
-          className="column"
         />
       </div>
     </div>

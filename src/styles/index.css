@@ -6,11 +6,6 @@
 
 @tailwind components;
 
-.column {
-  @apply h-screen flex-grow border-r px-4 pt-8;
-  max-width: calc(100% / 3);
-}
-
 .column:last-child {
   @apply border-r-0;
 }

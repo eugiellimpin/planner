@@ -5,6 +5,7 @@ import format from "date-fns/format";
 
 import './Calendar.css'
 import { useEffect } from "react";
+import Column from "./Column";
 
 function CalendarDay({ onClick, isCurrent, children }) {
   const ref = useRef();
@@ -27,12 +28,12 @@ function CalendarDay({ onClick, isCurrent, children }) {
   );
 }
 
-function Calendar({ onClickDay, isDisplayedDate, ...props }) {
+function Calendar({ onClickDay, isDisplayedDate }) {
   const currentDate = new Date();
   const dayCount = getDaysInMonth(currentDate);
 
   return (
-    <div {...props}>
+    <Column className="hidden lg:block">
       <h2 className="column--header">{format(currentDate, 'MMMM yyyy')}</h2>
 
       <div className="calendar grid-container">
@@ -48,7 +49,7 @@ function Calendar({ onClickDay, isDisplayedDate, ...props }) {
           );
         })}
       </div>
-    </div>
+    </Column>
   );
 }
 
