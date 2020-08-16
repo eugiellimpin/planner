@@ -17,6 +17,10 @@ function IconButton({ children, className, ...props }) {
   );
 }
 
+function Wrapper({ children, className }) {
+  return <li className={c("flex px-1 py-3 border-t", className)}>{children}</li>;
+}
+
 export function TodoForm({ onSave, todo, onCancel }) {
   const [isEditing, setIsEditing] = useState(!!todo);
   const [title, setTitle] = useState(!!todo ? todo.title : "");
@@ -31,7 +35,7 @@ export function TodoForm({ onSave, todo, onCancel }) {
   }, [isEditing, inputRef]);
 
   return (
-    <li className="flex flex-col">
+    <Wrapper className="flex-col">
       <form>
         {isEditing && (
           <input
@@ -70,7 +74,7 @@ export function TodoForm({ onSave, todo, onCancel }) {
           )}
         </div>
       </form>
-    </li>
+    </Wrapper>
   );
 }
 
@@ -87,7 +91,7 @@ export function Todo({ todo, onMove, onUpdate, onDelete, moveButtonPosition }) {
       onCancel={() => setIsEditing(false)}
     />
   ) : (
-    <li className="flex px-2 py-3 border-t hover:bg-gray-100">
+    <Wrapper className="hover:bg-gray-100">
       {moveButtonPosition === "left" && (
         <span>
           <IconButton onClick={onMove} className="mr-1">
@@ -116,6 +120,6 @@ export function Todo({ todo, onMove, onUpdate, onDelete, moveButtonPosition }) {
           </IconButton>
         )}
       </span>
-    </li>
+    </Wrapper>
   );
 }
