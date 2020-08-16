@@ -10,12 +10,13 @@ import { ReactComponent as DeleteIcon } from "./assets/trash.svg";
 import Calendar from "./components/Calendar";
 import Navbar from "./components/Navbar";
 import Column from "./components/Column";
+import Checkbox from "./components/Checkbox";
 
 function IconButton({ children, className, ...props }) {
   return (
     <button
       {...props}
-      className={c("hover:bg-gray-300 p-1 rounded", className)}
+      className={c("p-1 hover:bg-gray-300 rounded", className)}
     >
       {children}
     </button>
@@ -39,19 +40,19 @@ function Todo({ todo, onMove, onUpdate, onDelete, moveButtonPosition }) {
       onCancel={() => setIsEditing(false)}
     />
   ) : (
-    <li className="flex items-center h-12 px-2 hover:bg-gray-100">
+    <li className="flex px-2 py-3 border-b hover:bg-gray-100">
       {moveButtonPosition === "left" && (
-        <IconButton onClick={onMove} className="mr-1">
-          <PushLeftIcon />
-        </IconButton>
+        <span>
+          <IconButton onClick={onMove} className="mr-1">
+            <PushLeftIcon />
+          </IconButton>
+        </span>
       )}
 
-      <input
-        type="checkbox"
-        checked={todo.done}
-        onChange={(e) =>
-          onUpdate({ id: todo.id, done: e.currentTarget.checked })
-        }
+      <Checkbox
+        isChecked={todo.done}
+        onChange={(isChecked) => onUpdate({ id: todo.id, done: isChecked })}
+        className="my-1"
       />
       <span onClick={() => setIsEditing(true)} className="flex-grow px-2">
         {todo.title}

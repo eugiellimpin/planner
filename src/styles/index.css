@@ -15,3 +15,7 @@
 }
 
 @tailwind utilities;
+
+.checkbox:hover > svg + svg {
+  @apply visible;
+}
