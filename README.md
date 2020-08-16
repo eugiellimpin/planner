@@ -22,6 +22,15 @@ $ yarn start
 
 # Release notes
 
+## Aug 16
+
+- improve todo component: better handling of long titles and custom checkbox component
+- update favicon, logos, title and meta tags
+
+## Aug 15
+
+- usable mobile view. For now it only displays current day
+
 ## Aug 13
 
 - navbar is now white
