@@ -12,6 +12,7 @@ Create `.env.local` and add the following firebase credentials from your project
 REACT_APP_FIREBASE_API_KEY=APIKEY
 REACT_APP_FIREBASE_AUTH_DOMAIN=AUTHDOMAIN
 REACT_APP_FIREBASE_PROJECT_ID=PROJECTID
+REACT_APP_TRIAL_USER_ID=TRIALUSERID
 ```
 
 Then run the app
@@ -21,6 +22,10 @@ $ yarn start
 ```
 
 # Release notes
+
+## Aug 21
+
+- enable anonymous app usage using a guest user
 
 ## Aug 16
 
