@@ -11,21 +11,25 @@ firebase.initializeApp({
   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
 });
 
+const auth = firebase.auth();
 const db = firebase.firestore();
 const todosRef = db.collection("todos");
 
-function App() {
-  const [user, setUser] = useState();
+const trialUser = {
+  uid: process.env.REACT_APP_TRIAL_USER_ID,
+  displayName: "Guest",
+};
 
-  const logout = () =>
-    firebase
-      .auth()
-      .signOut()
-      .then(() => setUser(undefined));
+function App() {
+  const [user, setUser] = useState(trialUser);
+
+  const logout = () => auth.signOut().then(() => setUser(undefined));
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged((currentUser) => {
-      if (currentUser && !user) setUser(currentUser);
+    auth.onAuthStateChanged((currentUser) => {
+      if (currentUser && user && user.uid !== currentUser.uid) {
+        setUser(currentUser);
+      }
     });
   }, [user, setUser]);
 
