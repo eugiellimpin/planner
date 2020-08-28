@@ -2,11 +2,15 @@ import React, { useState, useEffect } from "react";
 import * as firebase from "firebase/app";
 import isDate from "date-fns/isDate";
 import format from "date-fns/format";
+import { addDays } from "date-fns";
 
 import Calendar from "./components/Calendar";
 import Navbar from "./components/Navbar";
 import Column from "./components/Column";
 import { Todo, TodoForm } from "./components/Todo";
+import { ReactComponent as LeftIcon } from "./assets/chevron_left.svg";
+import { ReactComponent as RightIcon } from "./assets/chevron_right.svg";
+import { IconButton } from "./components/Button";
 
 function createTimestamp(date) {
   return new firebase.firestore.Timestamp(Math.floor(date.getTime() / 1000), 0);
@@ -29,12 +33,31 @@ function TodoList({ todos, onMove, onUpdate, onDelete, moveButtonPosition }) {
   );
 }
 
-function Day({ date, todos, todosRef, onSave, onUpdate, onDelete }) {
+function Day({
+  date,
+  todos,
+  todosRef,
+  onSave,
+  onUpdate,
+  onDelete,
+  onChangeDay,
+}) {
   const onMove = (id) => todosRef.doc(id).update({ dueDate: null });
 
   return (
     <Column>
-      <h2 className="column--header">{format(date, "EEE dd MMM")}</h2>
+      <div className="flex items-center justify-between">
+        <IconButton onClick={() => onChangeDay(-1)} className="">
+          <LeftIcon />
+        </IconButton>
+
+        <h2 className="column--header">{format(date, "EEE dd MMM")}</h2>
+
+        <IconButton onClick={() => onChangeDay(1)} className="">
+          <RightIcon />
+        </IconButton>
+      </div>
+
       <TodoList
         todos={todos}
         onMove={onMove}
@@ -105,6 +128,13 @@ function Dashboard({ todosRef, user, onLogout }) {
     setDisplayedDate(new Date(year, month, dayOfMonth));
   };
 
+  const changeDay = (direction) => {
+    if (!Number.isFinite(direction)) return;
+
+    const offset = direction > 0 ? 1 : -1;
+    setDisplayedDate((prev) => addDays(prev, offset));
+  };
+
   const isDisplayedDate = (dayOfMonth) => {
     if (isDate(dayOfMonth)) {
       return dayOfMonth.toDateString() === displayedDate.toDateString();
@@ -152,6 +182,7 @@ function Dashboard({ todosRef, user, onLogout }) {
           onSave={onSave(createTimestamp(displayedDate))}
           onUpdate={onUpdate}
           onDelete={onDelete}
+          onChangeDay={changeDay}
           className="column h-screen flex-1 border-r px-4 pt-8"
         />
         <Backlog
