@@ -5,17 +5,7 @@ import { ReactComponent as PushLeftIcon } from "../assets/push_left.svg";
 import { ReactComponent as PushRightIcon } from "../assets/push_right.svg";
 import { ReactComponent as DeleteIcon } from "../assets/trash.svg";
 import Checkbox from "./Checkbox";
-
-function IconButton({ children, className, ...props }) {
-  return (
-    <button
-      {...props}
-      className={c("p-1 hover:bg-gray-300 rounded", className)}
-    >
-      {children}
-    </button>
-  );
-}
+import { IconButton } from "./Button";
 
 function Wrapper({ children, className }) {
   return <li className={c("flex px-1 py-3 border-t", className)}>{children}</li>;
