@@ -23,6 +23,10 @@ $ yarn start
 
 # Release notes
 
+## Aug 28
+
+- currently displayed date can now be changed one day at a time
+
 ## Aug 21
 
 - enable anonymous app usage using a guest user
