@@ -8,7 +8,9 @@ import Checkbox from "./Checkbox";
 import { IconButton } from "./Button";
 
 function Wrapper({ children, className }) {
-  return <li className={c("flex px-1 py-3 border-t", className)}>{children}</li>;
+  return (
+    <li className={c("flex px-1 py-3 border-t", className)}>{children}</li>
+  );
 }
 
 export function TodoForm({ onSave, todo, onCancel }) {
