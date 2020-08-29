@@ -49,7 +49,7 @@ function Day({
   onDelete,
   onChangeDay,
 }) {
-  const [showCompleted, setShowCompleted] = useState(true);
+  const [showCompleted, setShowCompleted] = useState(false);
 
   const onMove = (id) => todosRef.doc(id).update({ dueDate: null });
 
@@ -84,7 +84,7 @@ function Day({
             onClick={() => setShowCompleted((prev) => !prev)}
             className="flex justify-between w-full px-2 bg-gray-200 text-gray-600 focus:outline-none"
           >
-            <span>Completed</span>
+            <span>{showCompleted ? 'Completed' : 'Show completed'}</span>
             <span>{completedTodos.length}</span>
           </button>
 
