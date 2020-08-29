@@ -95,7 +95,10 @@ export function Todo({ todo, onMove, onUpdate, onDelete, moveButtonPosition }) {
         onChange={(isChecked) => onUpdate({ id: todo.id, done: isChecked })}
         className="my-1"
       />
-      <span onClick={() => setIsEditing(true)} className="flex-grow px-2">
+      <span
+        onClick={() => setIsEditing(true)}
+        className={c("flex-grow px-2", todo.done && "text-gray-600 line-through")}
+      >
         {todo.title}
       </span>
 
