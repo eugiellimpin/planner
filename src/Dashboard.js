@@ -59,7 +59,15 @@ function Day({
       </div>
 
       <TodoList
-        todos={todos}
+        todos={todos.filter(t => !t.done)}
+        onMove={onMove}
+        moveButtonPosition="right"
+        onUpdate={onUpdate}
+        onDelete={onDelete}
+      />
+
+      <TodoList
+        todos={todos.filter(t => t.done)}
         onMove={onMove}
         moveButtonPosition="right"
         onUpdate={onUpdate}
