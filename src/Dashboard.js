@@ -16,9 +16,16 @@ function createTimestamp(date) {
   return new firebase.firestore.Timestamp(Math.floor(date.getTime() / 1000), 0);
 }
 
-function TodoList({ todos, onMove, onUpdate, onDelete, moveButtonPosition }) {
+function TodoList({
+  todos,
+  onMove,
+  onUpdate,
+  onDelete,
+  moveButtonPosition,
+  className,
+}) {
   return (
-    <ul>
+    <ul className={className}>
       {todos.map((t) => (
         <Todo
           todo={t}
@@ -42,7 +49,11 @@ function Day({
   onDelete,
   onChangeDay,
 }) {
+  const [showCompleted, setShowCompleted] = useState(true);
+
   const onMove = (id) => todosRef.doc(id).update({ dueDate: null });
+
+  const completedTodos = todos.filter((t) => t.done);
 
   return (
     <Column>
@@ -59,20 +70,35 @@ function Day({
       </div>
 
       <TodoList
-        todos={todos.filter(t => !t.done)}
+        todos={todos.filter((t) => !t.done)}
         onMove={onMove}
         moveButtonPosition="right"
         onUpdate={onUpdate}
         onDelete={onDelete}
+        className="mb-4"
       />
 
-      <TodoList
-        todos={todos.filter(t => t.done)}
-        onMove={onMove}
-        moveButtonPosition="right"
-        onUpdate={onUpdate}
-        onDelete={onDelete}
-      />
+      {completedTodos.length > 0 && (
+        <div>
+          <button
+            onClick={() => setShowCompleted((prev) => !prev)}
+            className="flex justify-between w-full px-2 bg-gray-200 text-gray-600 focus:outline-none"
+          >
+            <span>Completed</span>
+            <span>{completedTodos.length}</span>
+          </button>
+
+          {showCompleted && (
+            <TodoList
+              todos={completedTodos}
+              onMove={onMove}
+              moveButtonPosition="right"
+              onUpdate={onUpdate}
+              onDelete={onDelete}
+            />
+          )}
+        </div>
+      )}
 
       <TodoForm onSave={onSave} />
     </Column>
