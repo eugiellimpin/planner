@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import c from "classnames";
 
-import { ReactComponent as PushLeftIcon } from "../assets/push_left.svg";
-import { ReactComponent as PushRightIcon } from "../assets/push_right.svg";
-import { ReactComponent as DeleteIcon } from "../assets/trash.svg";
 import Checkbox from "./Checkbox";
 import { IconButton } from "./Button";
+import { MoveToInboxIcon, TrashIcon, ScheduleIcon } from "./Icons";
 
 function Wrapper({ children, className }) {
   return (
@@ -70,7 +68,7 @@ export function TodoForm({ onSave, todo, onCancel }) {
   );
 }
 
-export function Todo({ todo, onMove, onUpdate, onDelete, moveButtonPosition }) {
+export function Todo({ todo, onMove, onUpdate, onDelete, isScheduled }) {
   const [isEditing, setIsEditing] = useState(false);
 
   return isEditing ? (
@@ -84,14 +82,6 @@ export function Todo({ todo, onMove, onUpdate, onDelete, moveButtonPosition }) {
     />
   ) : (
     <Wrapper className="hover:bg-gray-100">
-      {moveButtonPosition === "left" && (
-        <span>
-          <IconButton onClick={onMove} className="mr-1">
-            <PushLeftIcon />
-          </IconButton>
-        </span>
-      )}
-
       <Checkbox
         isChecked={todo.done}
         onChange={(isChecked) => onUpdate({ id: todo.id, done: isChecked })}
@@ -99,19 +89,26 @@ export function Todo({ todo, onMove, onUpdate, onDelete, moveButtonPosition }) {
       />
       <span
         onClick={() => setIsEditing(true)}
-        className={c("flex-grow px-2", todo.done && "text-gray-600 line-through")}
+        className={c(
+          "flex-grow px-2",
+          todo.done && "text-gray-600 line-through"
+        )}
       >
         {todo.title}
       </span>
 
       <span>
         <IconButton onClick={() => onDelete(todo.id)} className="mr-1">
-          <DeleteIcon />
+          <TrashIcon />
         </IconButton>
 
-        {moveButtonPosition === "right" && (
+        {isScheduled ? (
           <IconButton onClick={onMove}>
-            <PushRightIcon />
+            <MoveToInboxIcon />
+          </IconButton>
+        ) : (
+          <IconButton onClick={onMove} className="mr-1">
+            <ScheduleIcon />
           </IconButton>
         )}
       </span>

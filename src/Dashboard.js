@@ -8,9 +8,8 @@ import Calendar from "./components/Calendar";
 import Navbar from "./components/Navbar";
 import Column from "./components/Column";
 import { Todo, TodoForm } from "./components/Todo";
-import { ReactComponent as LeftIcon } from "./assets/chevron_left.svg";
-import { ReactComponent as RightIcon } from "./assets/chevron_right.svg";
 import { IconButton } from "./components/Button";
+import { ChevronLeftIcon, ChevronRightIcon } from "./components/Icons";
 
 function createTimestamp(date) {
   return new firebase.firestore.Timestamp(Math.floor(date.getTime() / 1000), 0);
@@ -21,7 +20,7 @@ function TodoList({
   onMove,
   onUpdate,
   onDelete,
-  moveButtonPosition,
+  isScheduled,
   className,
 }) {
   return (
@@ -32,7 +31,7 @@ function TodoList({
           onMove={() => onMove(t.id)}
           onUpdate={onUpdate}
           onDelete={onDelete}
-          moveButtonPosition={moveButtonPosition}
+          isScheduled={isScheduled}
           key={t.id}
         />
       ))}
@@ -59,20 +58,20 @@ function Day({
     <Column>
       <div className="flex items-center justify-between">
         <IconButton onClick={() => onChangeDay(-1)} className="">
-          <LeftIcon />
+          <ChevronLeftIcon />
         </IconButton>
 
         <h2 className="column--header">{format(date, "EEE dd MMM")}</h2>
 
         <IconButton onClick={() => onChangeDay(1)} className="">
-          <RightIcon />
+          <ChevronRightIcon />
         </IconButton>
       </div>
 
       <TodoList
         todos={todos.filter((t) => !t.done)}
         onMove={onMove}
-        moveButtonPosition="right"
+        isScheduled={true}
         onUpdate={onUpdate}
         onDelete={onDelete}
         className="mb-4"
@@ -92,7 +91,7 @@ function Day({
             <TodoList
               todos={completedTodos}
               onMove={onMove}
-              moveButtonPosition="right"
+              isScheduled={true}
               onUpdate={onUpdate}
               onDelete={onDelete}
             />
@@ -125,7 +124,7 @@ function Backlog({
         onMove={onMove}
         onUpdate={onUpdate}
         onDelete={onDelete}
-        moveButtonPosition="left"
+        isScheduled={false}
       />
 
       <TodoForm onSave={(todo) => onSave(todo, null)} />
