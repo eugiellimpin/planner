@@ -97,7 +97,7 @@ export function Todo({ todo, onMove, onUpdate, onDelete, isScheduled }) {
         {todo.title}
       </span>
 
-      <span>
+      <span className="flex-shrink-0">
         <IconButton onClick={() => onDelete(todo.id)} className="mr-1">
           <TrashIcon />
         </IconButton>
