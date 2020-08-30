@@ -147,13 +147,14 @@ function Dashboard({ todosRef, user, onLogout }) {
     todosRef.doc(id).update(updatedTodo);
   };
 
-  const onSave = (dueDate) => (title) => {
+  const onSave = (dueDate) => ({ title, repeat }) => {
     todosRef.add({
       title,
       done: false,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       dueDate,
       uid: user.uid,
+      repeat,
     });
   };
 

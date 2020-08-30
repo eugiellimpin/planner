@@ -3,7 +3,11 @@ import c from "classnames";
 
 import Checkbox from "./Checkbox";
 import { IconButton } from "./Button";
-import { MoveToInboxIcon, TrashIcon, ScheduleIcon } from "./Icons";
+import {
+  MoveToInboxIcon,
+  TrashIcon,
+  ScheduleIcon,
+} from "./Icons";
 
 function Wrapper({ children, className }) {
   return (
@@ -14,6 +18,9 @@ function Wrapper({ children, className }) {
 export function TodoForm({ onSave, todo, onCancel, onDelete }) {
   const [isEditing, setIsEditing] = useState(!!todo);
   const [title, setTitle] = useState(!!todo ? todo.title : "");
+  const [repeat, setRepeat] = useState(
+    todo ? todo.repeat === "everyday" : false
+  );
   const saveLabel = !!todo ? "Save" : "Add task";
 
   const inputRef = useRef(null);
@@ -36,6 +43,17 @@ export function TodoForm({ onSave, todo, onCancel, onDelete }) {
           />
         )}
 
+        {isEditing && (
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              onChange={() => setRepeat((prev) => !prev)}
+              checked={repeat}
+            />
+            Repeat every day
+          </label>
+        )}
+
         <div className="flex items-center justify-between">
           <span>
             <button
@@ -44,7 +62,7 @@ export function TodoForm({ onSave, todo, onCancel, onDelete }) {
                 if (!isEditing) setIsEditing(true);
 
                 if (title.trim().length > 0) {
-                  onSave(title);
+                  onSave({ title, repeat: repeat ? "everyday" : '' });
                   setTitle("");
                 }
               }}
@@ -82,8 +100,8 @@ export function Todo({ todo, onMove, onUpdate, onDelete, isScheduled }) {
   return isEditing ? (
     <TodoForm
       todo={todo}
-      onSave={(title) => {
-        onUpdate({ id: todo.id, title });
+      onSave={(updatedTodo) => {
+        onUpdate({ id: todo.id, ...updatedTodo });
         setIsEditing(false);
       }}
       onCancel={() => setIsEditing(false)}
