@@ -5,11 +5,22 @@ import { ReactComponent as MoveToInbox } from "../assets/inbox.svg";
 import { ReactComponent as Trash } from "../assets/trash.svg";
 import { ReactComponent as Chevron } from "../assets/chevron.svg";
 import { ReactComponent as Schedule } from "../assets/schedule.svg";
+import { ReactComponent as Repeat } from "../assets/repeat.svg";
+import { ReactComponent as Close } from "../assets/close.svg";
 
-const props = { height: "18", className: "text-gray-700 fill-current" };
+const buildProps = (className) => ({
+  height: "18",
+  className: c("text-gray-700 fill-current inline", className || ''),
+});
 
-export const MoveToInboxIcon = () => <MoveToInbox {...props} />;
-export const TrashIcon = () => <Trash {...props} />;
-export const ChevronRightIcon = () => <Chevron {...props} className={c(props.className, 'transform rotate-90')} />;
-export const ChevronLeftIcon = () => <Chevron {...props} className={c(props.className, 'transform -rotate-90')} />;
-export const ScheduleIcon = () => <Schedule {...props} />;
+export const MoveToInboxIcon = () => <MoveToInbox {...buildProps()} />;
+export const TrashIcon = () => <Trash {...buildProps()} />;
+export const ChevronRightIcon = () => (
+  <Chevron {...buildProps("transform rotate-90")} />
+);
+export const ChevronLeftIcon = () => (
+  <Chevron {...buildProps("transform -rotate-90")} />
+);
+export const ScheduleIcon = () => <Schedule {...buildProps()} />;
+export const RepeatIcon = () => <Repeat {...buildProps()} />;
+export const CloseIcon = () => <Close {...buildProps()} />;
