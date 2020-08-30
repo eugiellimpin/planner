@@ -11,7 +11,7 @@ function Wrapper({ children, className }) {
   );
 }
 
-export function TodoForm({ onSave, todo, onCancel }) {
+export function TodoForm({ onSave, todo, onCancel, onDelete }) {
   const [isEditing, setIsEditing] = useState(!!todo);
   const [title, setTitle] = useState(!!todo ? todo.title : "");
   const saveLabel = !!todo ? "Save" : "Add task";
@@ -32,35 +32,43 @@ export function TodoForm({ onSave, todo, onCancel }) {
             ref={inputRef}
             value={title}
             onChange={(e) => setTitle(e.currentTarget.value)}
-            className="w-full rounded border border-gray-400 p-2 focus:border-gray-600 focus:outline-none"
+            className="w-full rounded border border-gray-400 p-2 focus:border-gray-600 focus:outline-none mb-2"
           />
         )}
 
-        <div className="mt-2">
-          <button
-            disabled={isEditing && title.length < 1}
-            onClick={() => {
-              if (!isEditing) setIsEditing(true);
-
-              if (title.trim().length > 0) {
-                onSave(title);
-                setTitle("");
-              }
-            }}
-            className="px-2 py-1 rounded bg-green-600 text-white font-bold focus:outline-none"
-          >
-            {saveLabel}
-          </button>
-          {isEditing && (
+        <div className="flex items-center justify-between">
+          <span>
             <button
+              disabled={isEditing && title.length < 1}
               onClick={() => {
-                setIsEditing(false);
-                onCancel && onCancel();
+                if (!isEditing) setIsEditing(true);
+
+                if (title.trim().length > 0) {
+                  onSave(title);
+                  setTitle("");
+                }
               }}
-              className="px-2 py-1 text-gray-700 hover:underline focus:outline-none"
+              className="px-2 py-1 rounded bg-green-600 text-white font-bold focus:outline-none"
             >
-              Cancel
+              {saveLabel}
             </button>
+            {isEditing && (
+              <button
+                onClick={() => {
+                  setIsEditing(false);
+                  onCancel && onCancel();
+                }}
+                className="px-2 py-1 text-gray-700 hover:underline focus:outline-none"
+              >
+                Cancel
+              </button>
+            )}
+          </span>
+
+          {todo && (
+            <IconButton onClick={() => onDelete(todo.id)} className="mr-1">
+              <TrashIcon />
+            </IconButton>
           )}
         </div>
       </form>
@@ -79,6 +87,7 @@ export function Todo({ todo, onMove, onUpdate, onDelete, isScheduled }) {
         setIsEditing(false);
       }}
       onCancel={() => setIsEditing(false)}
+      onDelete={onDelete}
     />
   ) : (
     <Wrapper className="hover:bg-gray-100">
@@ -97,21 +106,15 @@ export function Todo({ todo, onMove, onUpdate, onDelete, isScheduled }) {
         {todo.title}
       </span>
 
-      <span className="flex-shrink-0">
-        <IconButton onClick={() => onDelete(todo.id)} className="mr-1">
-          <TrashIcon />
+      {isScheduled ? (
+        <IconButton onClick={onMove}>
+          <MoveToInboxIcon />
         </IconButton>
-
-        {isScheduled ? (
-          <IconButton onClick={onMove}>
-            <MoveToInboxIcon />
-          </IconButton>
-        ) : (
-          <IconButton onClick={onMove} className="mr-1">
-            <ScheduleIcon />
-          </IconButton>
-        )}
-      </span>
+      ) : (
+        <IconButton onClick={onMove} className="mr-1">
+          <ScheduleIcon />
+        </IconButton>
+      )}
     </Wrapper>
   );
 }
