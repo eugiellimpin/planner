@@ -84,7 +84,13 @@ export function TodoForm({ onSave, todo, onCancel, onDelete }) {
           </span>
 
           {todo && (
-            <IconButton onClick={() => onDelete(todo.id)} className="mr-1">
+            <IconButton
+              onClick={(e) => {
+                e.preventDefault();
+                onDelete(todo.id);
+              }}
+              className="mr-1"
+            >
               <TrashIcon />
             </IconButton>
           )}
