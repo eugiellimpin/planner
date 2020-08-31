@@ -60,6 +60,7 @@ export function TodoForm({ onSave, todo, onCancel, onDelete }) {
                 if (title.trim().length > 0) {
                   onSave({ title, repeat: repeat ? "everyday" : "" });
                   setTitle("");
+                  setRepeat(false);
                 }
               }}
             >
