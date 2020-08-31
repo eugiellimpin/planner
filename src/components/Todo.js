@@ -2,12 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import c from "classnames";
 
 import Checkbox from "./Checkbox";
-import { IconButton } from "./Button";
-import {
-  MoveToInboxIcon,
-  TrashIcon,
-  ScheduleIcon,
-} from "./Icons";
+import { Button, IconButton } from "./Button";
+import { MoveToInboxIcon, TrashIcon, ScheduleIcon } from "./Icons";
 
 function Wrapper({ children, className }) {
   return (
@@ -56,20 +52,19 @@ export function TodoForm({ onSave, todo, onCancel, onDelete }) {
 
         <div className="flex items-center justify-between">
           <span>
-            <button
+            <Button
               disabled={isEditing && title.length < 1}
               onClick={() => {
                 if (!isEditing) setIsEditing(true);
 
                 if (title.trim().length > 0) {
-                  onSave({ title, repeat: repeat ? "everyday" : '' });
+                  onSave({ title, repeat: repeat ? "everyday" : "" });
                   setTitle("");
                 }
               }}
-              className="px-2 py-1 rounded bg-green-600 text-white font-bold focus:outline-none"
             >
               {saveLabel}
-            </button>
+            </Button>
             {isEditing && (
               <button
                 onClick={() => {
