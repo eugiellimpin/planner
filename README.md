@@ -23,6 +23,16 @@ $ yarn start
 
 # Release notes
 
+## Aug 30
+
+- add option to repeat a todo every day
+- new icons
+- only show delete button when editing a todo
+
+## Aug 29
+
+- Separate incomplete and completed todos
+
 ## Aug 28
 
 - currently displayed date can now be changed one day at a time
@@ -43,5 +53,5 @@ $ yarn start
 ## Aug 13
 
 - navbar is now white
-- press enter to add a new task after typing the title
-- focus input automatically when adding a new task
+- press enter to add a new todo after typing the title
+- focus input automatically when adding a new todo
