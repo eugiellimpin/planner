@@ -35,16 +35,17 @@ export function TodoForm({ onSave, todo, onCancel, onDelete }) {
             ref={inputRef}
             value={title}
             onChange={(e) => setTitle(e.currentTarget.value)}
-            className="w-full rounded border border-gray-400 p-2 focus:border-gray-600 focus:outline-none mb-2"
+            className="w-full rounded border border-gray-400 p-2 focus:border-gray-600 focus:outline-none mb-4"
           />
         )}
 
         {isEditing && (
-          <label className="flex items-center">
+          <label className="flex items-center text-sm mb-4 hover:underline cursor-pointer select-none">
             <input
               type="checkbox"
               onChange={() => setRepeat((prev) => !prev)}
               checked={repeat}
+              className="mr-2"
             />
             Repeat every day
           </label>
