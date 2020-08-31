@@ -23,6 +23,10 @@ $ yarn start
 
 # Release notes
 
+## Aug 31
+
+- fix bugs
+
 ## Aug 30
 
 - add option to repeat a todo every day
