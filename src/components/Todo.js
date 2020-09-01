@@ -64,6 +64,7 @@ export function TodoForm({ onSave, todo, onCancel, onDelete }) {
                   setRepeat(false);
                 }
               }}
+              type="submit"
             >
               {saveLabel}
             </Button>
