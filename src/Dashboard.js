@@ -204,7 +204,7 @@ function Dashboard({ todosRef, user, onLogout }) {
   return (
     <div>
       <Navbar user={user} onLogout={onLogout} />
-      <div className="flex flex-col lg:flex-row">
+      <div className="flex flex-col lg:flex-row h-main">
         <Calendar
           onClickDay={changeDisplayedDate}
           isDisplayedDate={isDisplayedDate}
