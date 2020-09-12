@@ -27,6 +27,8 @@ export function TodoForm({ onSave, todo, onCancel, onDelete }) {
     }
   }, [isEditing, inputRef]);
 
+  const labels = title.split(" ").filter((token) => token[0] === "#");
+
   return (
     <Wrapper className="flex-col">
       <form>
@@ -58,8 +60,16 @@ export function TodoForm({ onSave, todo, onCancel, onDelete }) {
               onClick={() => {
                 if (!isEditing) setIsEditing(true);
 
-                if (title.trim().length > 0) {
-                  onSave({ title, repeat: repeat ? "everyday" : "" });
+                const titleWithoutLabels = title
+                  .replaceAll(new RegExp(labels.join("|"), 'g'), '')
+                  .trim();
+
+                if (titleWithoutLabels.length > 0) {
+                  onSave({
+                    title: titleWithoutLabels,
+                    repeat: repeat ? "everyday" : "",
+                    labels: labels.map((l) => l.substring(1)),
+                  });
                   setTitle("");
                   setRepeat(false);
                 }

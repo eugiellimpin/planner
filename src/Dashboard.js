@@ -147,7 +147,7 @@ function Dashboard({ todosRef, user, onLogout }) {
     todosRef.doc(id).update(updatedTodo);
   };
 
-  const onSave = (dueDate) => ({ title, repeat }) => {
+  const onSave = (dueDate) => ({ title, repeat, labels }) => {
     todosRef.add({
       title,
       done: false,
@@ -155,6 +155,7 @@ function Dashboard({ todosRef, user, onLogout }) {
       dueDate,
       uid: user.uid,
       repeat,
+      labels,
     });
   };
 
