@@ -5,7 +5,7 @@ import format from "date-fns/format";
 import { addDays } from "date-fns";
 
 import Calendar from "./components/Calendar";
-import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar";
 import Column from "./components/Column";
 import { Todo, TodoForm } from "./components/Todo";
 import { IconButton } from "./components/Button";
@@ -74,7 +74,7 @@ function Day({
         isScheduled={true}
         onUpdate={onUpdate}
         onDelete={onDelete}
-        className="mb-4"
+        className="mb-18"
       />
 
       {completedTodos.length > 0 && (
@@ -83,7 +83,7 @@ function Day({
             onClick={() => setShowCompleted((prev) => !prev)}
             className="flex justify-between w-full px-2 bg-gray-200 text-gray-600 focus:outline-none"
           >
-            <span>{showCompleted ? 'Completed' : 'Show completed'}</span>
+            <span>{showCompleted ? "Completed" : "Show completed"}</span>
             <span>{completedTodos.length}</span>
           </button>
 
@@ -138,6 +138,7 @@ function Dashboard({ todosRef, user, onLogout }) {
   const month = today.getMonth();
   const [todos, setTodos] = useState([]);
   const [displayedDate, setDisplayedDate] = useState(today);
+  const [labelFilter, setLabelFilter] = useState("");
 
   const onDelete = (id) => {
     todosRef.doc(id).delete();
@@ -197,15 +198,37 @@ function Dashboard({ todosRef, user, onLogout }) {
     return unsubscribe;
   }, [todosRef, user]);
 
-  const todosToday = todos.filter(
-    (t) => t.dueDate && isDisplayedDate(t.dueDate.toDate())
-  );
-  const backlogTodos = todos.filter((t) => !t.dueDate);
+  const labels = todos.reduce((result, todo) => {
+    if (Array.isArray(todo.labels) && todo.labels.length > 0) {
+      const toAdd = todo.labels.filter((l) => !result.includes(l));
+      return [...result, ...toAdd];
+    }
+
+    return result;
+  }, []);
+
+  const todosToday = todos.filter((t) => {
+    if (!!labelFilter && t.labels && !t.labels.includes(labelFilter)) return false;
+
+    return t.dueDate && isDisplayedDate(t.dueDate.toDate());
+  });
+
+  const backlogTodos = todos.filter((t) => {
+    if (!!labelFilter && t.labels && !t.labels.includes(labelFilter)) return false;
+
+    return !t.dueDate;
+  });
 
   return (
-    <div>
-      <Navbar user={user} onLogout={onLogout} />
-      <div className="flex flex-col lg:flex-row h-main">
+    <div className="with-sidebar">
+      <Sidebar
+        user={user}
+        onLogout={onLogout}
+        labels={labels}
+        onClickLabel={(l) => setLabelFilter((prev) => (prev === l ? "" : l))}
+      />
+
+      <div className="main flex">
         <Calendar
           onClickDay={changeDisplayedDate}
           isDisplayedDate={isDisplayedDate}

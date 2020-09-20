@@ -11,7 +11,24 @@
 }
 
 .column--header {
-  @apply font-bold text-center mb-4;
+  @apply font-bold text-center mb-18;
+}
+
+.with-sidebar {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.sidebar {
+  flex-basis: 240px; /* 2/3 col wide */
+  flex-grow: 1;
+}
+
+.with-sidebar .main {
+  min-height: 100vh;
+  min-width: 50%;
+  flex-basis: 0;
+  flex-grow: 999;
 }
 
 @tailwind utilities;
