@@ -138,7 +138,7 @@ function Dashboard({ todosRef, user, onLogout }) {
   const month = today.getMonth();
   const [todos, setTodos] = useState([]);
   const [displayedDate, setDisplayedDate] = useState(today);
-  const [labelFilter, setLabelFilter] = useState("");
+  const [activeLabel, setActiveFilter] = useState("");
 
   const onDelete = (id) => {
     todosRef.doc(id).delete();
@@ -208,13 +208,15 @@ function Dashboard({ todosRef, user, onLogout }) {
   }, []);
 
   const todosToday = todos.filter((t) => {
-    if (!!labelFilter && t.labels && !t.labels.includes(labelFilter)) return false;
+    if (!!activeLabel && t.labels && !t.labels.includes(activeLabel))
+      return false;
 
     return t.dueDate && isDisplayedDate(t.dueDate.toDate());
   });
 
   const backlogTodos = todos.filter((t) => {
-    if (!!labelFilter && t.labels && !t.labels.includes(labelFilter)) return false;
+    if (!!activeLabel && t.labels && !t.labels.includes(activeLabel))
+      return false;
 
     return !t.dueDate;
   });
@@ -225,7 +227,8 @@ function Dashboard({ todosRef, user, onLogout }) {
         user={user}
         onLogout={onLogout}
         labels={labels}
-        onClickLabel={(l) => setLabelFilter((prev) => (prev === l ? "" : l))}
+        activeLabel={activeLabel}
+        onClickLabel={(l) => setActiveFilter((prev) => (prev === l ? "" : l))}
       />
 
       <div className="main flex">
