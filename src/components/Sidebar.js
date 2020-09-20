@@ -1,8 +1,12 @@
 import React from "react";
 
+import { SidebarIcon } from "./Icons";
+
 function Sidebar({ user, labels, onLogout, onClickLabel }) {
   return (
-    <nav className="sidebar flex flex-col p-24 border-r-4">
+    <nav className="relative sidebar flex flex-col px-24 pb-24 pt-48 border-r-4">
+      <button className="absolute h-18 p-6 right-6 top-0"><SidebarIcon /></button>
+
       <p className="mb-24">{user.displayName}</p>
 
       <div className="flex-1">
