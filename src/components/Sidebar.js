@@ -5,7 +5,7 @@ import { SidebarIcon } from "./Icons";
 
 function Sidebar({ user, labels, activeLabel, onLogout, onClickLabel }) {
   return (
-    <nav className="relative sidebar flex flex-col px-24 pb-24 pt-48 border-r-4">
+    <nav className="max-h-screen relative sidebar flex flex-col px-24 pb-24 pt-48 border-r-4">
       <button className="invisible absolute h-18 p-6 right-6 top-0">
         <SidebarIcon />
       </button>
