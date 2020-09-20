@@ -7,10 +7,11 @@ import { ReactComponent as Chevron } from "../assets/chevron.svg";
 import { ReactComponent as Schedule } from "../assets/schedule.svg";
 import { ReactComponent as Repeat } from "../assets/repeat.svg";
 import { ReactComponent as Close } from "../assets/close.svg";
+import { ReactComponent as Sidebar } from "../assets/sidebar.svg";
 
 const buildProps = (className) => ({
   height: "18",
-  className: c("text-gray-700 fill-current inline", className || ''),
+  className: c("text-gray-600 fill-current inline", className || ''),
 });
 
 export const MoveToInboxIcon = () => <MoveToInbox {...buildProps()} />;
@@ -24,3 +25,4 @@ export const ChevronLeftIcon = () => (
 export const ScheduleIcon = () => <Schedule {...buildProps()} />;
 export const RepeatIcon = () => <Repeat {...buildProps()} />;
 export const CloseIcon = () => <Close {...buildProps()} />;
+export const SidebarIcon = () => <Sidebar {...buildProps()} />;
