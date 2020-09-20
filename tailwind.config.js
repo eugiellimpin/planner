@@ -3,6 +3,9 @@ module.exports = {
     visibility: ["hover"],
   },
   theme: {
+    maxHeight: {
+      screen: '100vh'
+    },
     extend: {
       inset: {
         6: "6px",
