@@ -207,18 +207,16 @@ function Dashboard({ todosRef, user, onLogout }) {
     return result;
   }, []);
 
-  const todosToday = todos.filter((t) => {
-    if (!!activeLabel && t.labels && !t.labels.includes(activeLabel))
-      return false;
+  const todosToday = todos.filter(({ dueDate, labels = [] }) => {
+    if (!!activeLabel && !labels.includes(activeLabel)) return false;
 
-    return t.dueDate && isDisplayedDate(t.dueDate.toDate());
+    return dueDate && isDisplayedDate(dueDate.toDate());
   });
 
-  const backlogTodos = todos.filter((t) => {
-    if (!!activeLabel && t.labels && !t.labels.includes(activeLabel))
-      return false;
+  const backlogTodos = todos.filter(({ dueDate, labels = [] }) => {
+    if (!!activeLabel && !labels.includes(activeLabel)) return false;
 
-    return !t.dueDate;
+    return !dueDate;
   });
 
   return (
