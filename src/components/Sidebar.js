@@ -18,7 +18,7 @@ function Sidebar({ user, labels, activeLabel, onLogout, onClickLabel }) {
         </h3>
 
         <ul className="">
-          {labels.map((l) => (
+          {labels.sort().map((l) => (
             <li
               className={c(
                 { "font-bold text-gray-800": activeLabel === l },
